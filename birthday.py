@@ -21,6 +21,16 @@ def get_date(user_id):
     return None
 
 
+def get_user():
+    now = datetime.datetime.now()
+    f = open(dir + "bday.json", 'r')
+    data = json.load(f)
+    for people in data["people"]:
+        if int(people["day"]) == now.day and int(people["month"]) == now.month:
+            return int(people["id"])
+    return None
+
+
 def set_date(user_id, year, month, day):
     fr = open(dir + "bday.json", 'r')
     data = json.load(fr)
