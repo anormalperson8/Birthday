@@ -5,7 +5,7 @@ from nextcord.ext import commands
 import json
 
 intents = nextcord.Intents.all()
-client = commands.Bot(command_prefix='$', intents=intents, activity=nextcord.Game(name="Happy Birthday...?"))
+client = commands.Bot(command_prefix='.', intents=intents, activity=nextcord.Game(name="Happy Birthday...?"))
 
 load_dotenv("/home/sunny/PythonBday/data/data.env")
 
@@ -14,6 +14,7 @@ owner_id = int(os.getenv('ID'))
 guilds_list = []
 for guild in client.guilds:
     guilds_list += guild
+
 
 @client.event
 async def on_ready():
