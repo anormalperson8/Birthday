@@ -2,14 +2,18 @@ import nextcord
 import os
 from dotenv import load_dotenv
 from nextcord.ext import commands
+import json
 
 intents = nextcord.Intents.all()
-client = commands.Bot(command_prefix='$', intents=intents, activity=nextcord.Game(name="Suffering"))
+client = commands.Bot(command_prefix='$', intents=intents, activity=nextcord.Game(name="Happy Birthday...?"))
 
-load_dotenv("/home/sunny/SuneBot/data/data.env")
+load_dotenv("/home/sunny/PythonBday/data/data.env")
 
 token = os.getenv('TOKEN')
 owner_id = int(os.getenv('ID'))
+guilds_list = []
+for guild in client.guilds:
+    guilds_list += guild
 
 @client.event
 async def on_ready():
@@ -26,13 +30,10 @@ async def boo(ctx):
 
 
 @commands.guild_only()
-@client.command()
-async def sync(ctx):
-    if ctx.author.id == owner_id:
-        await client.tree.sync()
-        await ctx.send("Commands synced!")
-    else:
-        await ctx.send("You're not the owner")
+@client.slash_command(guild_ids= guilds_list)
+async def ping(interaction: nextcord.Interaction):
+    await interaction.response.defer()
+    await interaction.edit_original_message(content="Pong!")
 
 
 @client.listen('on_message')
