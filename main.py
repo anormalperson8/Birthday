@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from nextcord.ext import commands
 import json
+import datetime
 
 intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix='.', intents=intents, activity=nextcord.Game(name="Happy Birthday...?"))
@@ -13,7 +14,7 @@ token = os.getenv('TOKEN')
 owner_id = int(os.getenv('ID'))
 guilds_list = []
 for guild in client.guilds:
-    guilds_list += guild
+    guilds_list += guild.id
 
 
 @client.event
@@ -31,10 +32,17 @@ async def boo(ctx):
 
 
 @commands.guild_only()
-@client.slash_command(guild_ids= guilds_list)
+@client.slash_command(guild_ids=guilds_list, description="Pong!")
 async def ping(interaction: nextcord.Interaction):
     await interaction.response.defer()
     await interaction.edit_original_message(content="Pong!")
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Get a member's birthday")
+async def get_birthday(interaction: nextcord.Interaction, arg: nextcord.User):
+    await interaction.response.defer()
+    await interaction.edit_original_message(content=f"Pong!")
 
 
 @client.listen('on_message')
