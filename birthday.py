@@ -2,8 +2,10 @@ import datetime
 import json
 import os
 from dotenv import load_dotenv
+
 load_dotenv("/home/sunny/PythonBday/data/data.env")
 dir = os.getenv("OLD_BDAY_PATH")
+
 
 def turn_to_english(number):
     x = datetime.datetime(1, number, 1).strftime("%B")
@@ -36,7 +38,7 @@ def set_date(user_id, year, month, day):
     if not stat:
         obj["people"].append({"id": user_id, "year": year, "month": month, "day": day})
     fw = open(dir + "/dummy.json", 'w')
-    fw.write(json.dumps(obj, indent=4))
+    fw.write(json.dumps(obj, indent=2))
     fw.close()
     os.remove(dir + "bday.json")
     os.rename(dir + "dummy.json", dir + "bday.json")
@@ -55,15 +57,12 @@ def remove_date(user_id):
     fr.close()
     obj = {"people": data_obj}
     fw = open(dir + "/dummy.json", 'w')
-    fw.write(json.dumps(obj, indent=4))
+    fw.write(json.dumps(obj, indent=2))
     fw.close()
     os.remove(dir + "bday.json")
     os.rename(dir + "dummy.json", dir + "bday.json")
     return stat
 
-
 # debug print
 # print(get_date(1117746108161081344).strftime("%Y"))
 # print(datetime.datetime.now())
-
-
