@@ -43,10 +43,14 @@ async def ping(interaction: nextcord.Interaction):
 @client.slash_command(guild_ids=guilds_list, description="Get a member's birthday! You can even get mine!")
 async def get_birthday(interaction: nextcord.Interaction, user: nextcord.User):
     await interaction.response.defer()
+    # TO BE REMOVED
     if interaction.user.id != owner_id and interaction.user.id != int("805783359610552380"):
         await interaction.edit_original_message(content="You don't have permission yet! Stay tuned.")
         return
     # TODO: ADD BLOCKING OF MEMBERS NOT IN THE SERVER
+    if interaction.guild.get_member(user.id) is None:
+        await interaction.edit_original_message(content="Member is not in server.")
+        return
     date = birthday.get_date(user.id)
     if date is not None:
         day = int(date.day)
