@@ -8,6 +8,7 @@ data_path = f"{path}/data/"
 load_dotenv(f"{data_path}data.env")
 os.getenv(f"{data_path}data.env")
 
+
 def turn_to_english(number):
     x = datetime.datetime(1, number, 1).strftime("%B")
     return x
@@ -26,14 +27,14 @@ def get_user():
     now = datetime.datetime.now()
     f = open(data_path + "bday.json", 'r')
     data = json.load(f)
-    people = []
+    people_list = []
     stat = False
     for people in data["people"]:
         if int(people["day"]) == now.day and int(people["month"]) == now.month:
-            people.append(int(people["id"]))
+            people_list.append(int(people["id"]))
             stat = True
     if stat:
-        return people
+        return people_list
     return None
 
 
