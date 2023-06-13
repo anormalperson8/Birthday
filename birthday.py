@@ -3,9 +3,10 @@ import json
 import os
 from dotenv import load_dotenv
 
-load_dotenv("/home/sunny/PythonBday/data/data.env")
-dir = os.getenv("OLD_BDAY_PATH")
-
+path = os.path.dirname(os.path.abspath(__file__))
+data_path = f"{path}/data/"
+load_dotenv(f"{data_path}data.env")
+os.getenv(f"{data_path}data.env")
 
 def turn_to_english(number):
     x = datetime.datetime(1, number, 1).strftime("%B")
@@ -13,7 +14,7 @@ def turn_to_english(number):
 
 
 def get_date(user_id):
-    f = open(dir + "bday.json", 'r')
+    f = open(data_path + "/bday.json", 'r')
     data = json.load(f)
     for people in data["people"]:
         if people["id"] == user_id:
@@ -23,7 +24,7 @@ def get_date(user_id):
 
 def get_user():
     now = datetime.datetime.now()
-    f = open(dir + "bday.json", 'r')
+    f = open(data_path + "bday.json", 'r')
     data = json.load(f)
     people = []
     stat = False
@@ -37,7 +38,7 @@ def get_user():
 
 
 def set_date(user_id, year, month, day):
-    fr = open(dir + "bday.json", 'r')
+    fr = open(data_path + "bday.json", 'r')
     data = json.load(fr)
     data_obj = []
     stat = False
@@ -52,15 +53,15 @@ def set_date(user_id, year, month, day):
     obj = {"people": data_obj}
     if not stat:
         obj["people"].append({"id": user_id, "year": year, "month": month, "day": day})
-    fw = open(dir + "/dummy.json", 'w')
+    fw = open(data_path + "/dummy.json", 'w')
     fw.write(json.dumps(obj, indent=2))
     fw.close()
-    os.remove(dir + "bday.json")
-    os.rename(dir + "dummy.json", dir + "bday.json")
+    os.remove(data_path + "bday.json")
+    os.rename(data_path + "dummy.json", data_path + "bday.json")
 
 
 def remove_date(user_id):
-    fr = open(dir + "bday.json", 'r')
+    fr = open(data_path + "bday.json", 'r')
     data = json.load(fr)
     data_obj = []
     stat = False
@@ -71,16 +72,16 @@ def remove_date(user_id):
         data_obj.append(people)
     fr.close()
     obj = {"people": data_obj}
-    fw = open(dir + "dummy.json", 'w')
+    fw = open(data_path + "dummy.json", 'w')
     fw.write(json.dumps(obj, indent=2))
     fw.close()
-    os.remove(dir + "bday.json")
-    os.rename(dir + "dummy.json", dir + "bday.json")
+    os.remove(data_path + "bday.json")
+    os.rename(data_path + "dummy.json", data_path + "bday.json")
     return stat
 
 
 def get_perm():
-    f = open(dir + "channel.txt", 'r')
+    f = open(data_path + "channel.txt", 'r')
     a = []
     for line in f.readlines():
         num = line.strip()

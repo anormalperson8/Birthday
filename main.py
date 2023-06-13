@@ -8,10 +8,14 @@ import calendar
 # Self .py files
 import birthday
 
+
 intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix='.', intents=intents, activity=nextcord.Game(name="Happy Birthday...?"))
 
-load_dotenv("/home/sunny/PythonBday/data/data.env")
+path = os.path.dirname(os.path.abspath(__file__))
+os.chdir(path)
+data_path = f"{path}/data"
+load_dotenv(f"{data_path}/data.env")
 
 token = os.getenv('TOKEN')
 owner_id = int(os.getenv('ID'))
@@ -212,7 +216,7 @@ async def set_user_birthday(interaction: nextcord.Interaction, user: nextcord.Us
         await interaction.edit_original_message(content="Invalid Birthday! <:EeveeOwO:965977455791857695>")
         return
     birthday.set_date(user.id, year, month, day)
-    await interaction.edit_original_message(content="Birthday added/edited! <:EeveeCool:1007625997719449642>")
+    await interaction.edit_original_message(content="Birthday updated! <:EeveeCool:1007625997719449642>")
 
 
 @commands.guild_only()
