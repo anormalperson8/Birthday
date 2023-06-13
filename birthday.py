@@ -71,7 +71,7 @@ def remove_date(user_id):
         data_obj.append(people)
     fr.close()
     obj = {"people": data_obj}
-    fw = open(dir + "/dummy.json", 'w')
+    fw = open(dir + "dummy.json", 'w')
     fw.write(json.dumps(obj, indent=2))
     fw.close()
     os.remove(dir + "bday.json")
@@ -80,7 +80,7 @@ def remove_date(user_id):
 
 
 def get_perm():
-    f = open("/home/sunny/PythonBday/data/channel.txt", 'r')
+    f = open(dir + "channel.txt", 'r')
     a = []
     for line in f.readlines():
         num = line.strip()

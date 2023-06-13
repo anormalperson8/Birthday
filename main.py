@@ -21,13 +21,12 @@ guilds_list = []
 for guild in client.guilds:
     guilds_list.append(int(guild.id))
 perm = birthday.get_perm()
-channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
-channel = client.get_guild(int(os.getenv('OUTLET'))).get_channel(int(os.getenv('AN_ID')))
 
 
 @client.event
 async def on_ready():
     await client.wait_until_ready()
+
     print('We have logged in as {0.user}'.format(client))
     bday_announcement.start()
 
@@ -39,6 +38,16 @@ async def boo(ctx):
         await ctx.send("You're not a user :P")
         return
     await ctx.send(f"Oi")
+
+
+@commands.guild_only()
+@client.command()
+async def echo(ctx, *, arg):
+    await ctx.message.delete()
+    for role in ctx.message.author.roles:
+        if role.id in mod_role_id:
+            await ctx.send(arg)
+            return
 
 
 # Check whether the member is in the server, and whether the channel is allowed to use the command
@@ -78,9 +87,11 @@ async def test(interaction: nextcord.Interaction, stat: int = 1):
     else:
         user_id = birthday.get_user()
         if user_id is not None:
+            channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
+            channel = client.get_guild(int(os.getenv('OUTLET'))).get_channel(int(os.getenv('AN_ID')))
             if len(user_id) == 1:
                 await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
-                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@{community}>")
+                                   f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@{community}>")
                 await channel_test.send(f"{nextcord.Client.get_user(int(user_id)).name}'s birthday message is sent.")
             elif len(user_id) == 2:
                 await channel.send(f"It's the birthday of <@{user_id[0]}> and <@{user_id[1]}>, "
@@ -189,7 +200,7 @@ async def set_user_birthday(interaction: nextcord.Interaction, user: nextcord.Us
     if user is None:
         user = interaction.user
     stat = check_user(user.id, interaction)
-    if stat == 0 or stat == 1: # Wrong channel or member not in server
+    if stat == 0 or stat == 1:  # Wrong channel or member not in server
         await interaction.response.defer(ephemeral=True)
         if stat:
             await interaction.edit_original_message(content="This is the wrong channel!")
@@ -246,6 +257,8 @@ async def delete_user_birthday(interaction: nextcord.Interaction, user: nextcord
 async def bday_announcement():
     user_id = birthday.get_user()
     if user_id is not None:
+        channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
+        channel = client.get_guild(int(os.getenv('OUTLET'))).get_channel(int(os.getenv('AN_ID')))
         if len(user_id) == 1:
             await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
                                f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@{community}>")
@@ -272,16 +285,19 @@ async def bday_announcement():
             debug += " sent."
             await channel_test.send(debug)
 
-# Easter egg I guess
+
+# Easter eggs I guess
 @client.listen('on_message')
 async def on_message(message):
     if message.author.bot:
         return
-    name = message.author.nick
-    if name is None:
-        name = message.author.name
     if "I don't like birthdays" in message.content:
+        name = message.author.nick
+        if name is None:
+            name = message.author.name
         await message.channel.send(f"You're mean, {name}. <:EeveeMegaSob:1084890813902884994>")
+    elif "birthday eevee" in message.content.lower():
+        await message.channel.send(f"<:EeveeLurk:991271779735719976>?")
 
 
 client.run(token)
