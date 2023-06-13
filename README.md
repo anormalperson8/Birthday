@@ -1,4 +1,6 @@
-# Bday
+# Birthday bot
 
-This is me trying to write a bot that stores Discord users' birthdays, and at the same time searchable.
-Also testing out daily task, where if there is a stored birthday, it would be announced.
+A Discord bot for storing birthdays, and annouces when the date matches.<br/>
+Written specifically for a friend's Discord server.
+
+Also used as an exercise to familiarise myself with the Python programming language.
