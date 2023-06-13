@@ -73,6 +73,17 @@ def remove_date(user_id):
     os.rename(dir + "dummy.json", dir + "bday.json")
     return stat
 
+
+def get_perm():
+    f = open("/home/sunny/PythonBday/data/channel.txt", 'r')
+    a = []
+    for line in f.readlines():
+        num = line.strip()
+        a.append(int(num))
+    f.close()
+    return a
+
+
 # debug print
 # print(get_date(1117746108161081344).strftime("%Y"))
 # print(datetime.datetime.now())
