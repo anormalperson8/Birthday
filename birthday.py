@@ -25,9 +25,14 @@ def get_user():
     now = datetime.datetime.now()
     f = open(dir + "bday.json", 'r')
     data = json.load(f)
+    people = []
+    stat = False
     for people in data["people"]:
         if int(people["day"]) == now.day and int(people["month"]) == now.month:
-            return int(people["id"])
+            people.append(int(people["id"]))
+            stat = True
+    if stat:
+        return people
     return None
 
 
