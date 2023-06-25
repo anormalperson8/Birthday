@@ -307,7 +307,7 @@ async def delete_user_birthday(interaction: nextcord.Interaction, user: nextcord
             content=f"{user.display_name}'s birthday does not exist in the system. <:EeveeCry:965985819057848320>")
 
 
-@tasks.loop(hours=23, minutes=59, seconds=30.0)
+@tasks.loop(hours=23, minutes=59, seconds=50.0)
 async def bday_announcement():
     user_id = birthday.get_user()
     if user_id is not None:
