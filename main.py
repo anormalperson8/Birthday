@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from nextcord.ext import commands, tasks
 import datetime
 import calendar
+
 # Self .py files
 import birthday
 
@@ -125,7 +126,6 @@ async def announce(user_id):
         await channel_test.send(debug)
 
 
-
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="test")
 async def test(interaction: nextcord.Interaction, stat: int = 1):
@@ -147,6 +147,29 @@ async def test(interaction: nextcord.Interaction, stat: int = 1):
             await announce(user_id)
         await interaction.response.defer()
         await interaction.edit_original_message(content="test(0) done <:EeveeUwU:965977552067899482>")
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Checkers. Not the board game one.")
+async def checkers(interaction: nextcord.Interaction):
+    if interaction.user.id != owner_id:
+        await interaction.response.defer(ephemeral=True)
+        await interaction.edit_original_message(
+            content="This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+        return
+    bday_list = birthday.get_user()
+    if bday_list is None:
+        await interaction.response.defer(ephemeral=True)
+        await interaction.edit_original_message(content="No bdays today.")
+        return
+    message = "It's the bday of "
+    for i in range(len(bday_list)):
+        if i != 0:
+            message += ", "
+        message += client.get_user(int(bday_list[i])).name
+    message += "."
+    await interaction.response.defer(ephemeral=True)
+    await interaction.edit_original_message(content=f"{message}")
 
 
 @commands.guild_only()

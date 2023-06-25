@@ -82,12 +82,7 @@ def remove_date(user_id):
 
 
 def get_perm():
-    f = open(data_path + "channel.txt", 'r')
-    a = []
-    for line in f.readlines():
-        num = line.strip()
-        a.append(int(num))
-    f.close()
+    a = [int(os.getenv('TEST_CHANNEL')), int(os.getenv('MODERATOR_ONLY')), int(os.getenv('BOT_STUFF'))]
     return a
 
 
