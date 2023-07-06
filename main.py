@@ -85,7 +85,7 @@ async def announce(user_id):
             await channel.send(f"It's my birthday today hehe <:EeveeLurk:991271779735719976>")
         else:
             await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
-                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@{community}>")
+                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
         await channel_test.send(f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.")
     elif len(user_id) == 2:
         if client.user.id in user_id:
@@ -93,12 +93,12 @@ async def announce(user_id):
             if user_id[0] == client.user.id:
                 a = 0
             await channel.send(f"It's <@{user_id[(a + 1) % 2]}>'s birthday, everyone wish them a happy birthday! "
-                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@{community}>")
+                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
             await channel.send(f"It's also my birthday today hehe <:EeveeLurk:991271779735719976>")
         else:
             await channel.send(f"It's the birthday of <@{user_id[0]}> and <@{user_id[1]}>, "
                            f"everyone wish them a happy birthday!\nHave a great day birthday stars! "
-                           f"<:EeveeHeart:977982162303324190> \n<@{community}>")
+                           f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
         await channel_test.send(f"{client.get_user(int(user_id[0])).name} and "
                                 f"{client.get_user(int(user_id[1])).name}'s birthday message is sent.")
     else:
@@ -112,7 +112,7 @@ async def announce(user_id):
             if i != len(user_id) - 2:
                 message += ", "
         message += (f" and <@{user_id[len(user_id) - 1]}>! Happy Birthday to all of them!"
-                    f"<:EeveeHeart:977982162303324190> \n<@{community}>")
+                    f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
         await channel.send(message)
         if stat:
             await channel.send(
