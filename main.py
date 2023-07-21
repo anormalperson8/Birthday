@@ -255,17 +255,18 @@ async def delete_user_birthday(interaction: nextcord.Interaction, user: nextcord
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Add a reaction to a message. Must be used in the same "
                                                          "channel as the target message. Mods only.")
-async def add_emote(interaction: nextcord.Interaction, message_id: str, emote: str):
+async def add_emote(interaction: nextcord.Interaction, message_id: int, emote: str):
     await interaction.response.defer(ephemeral=True)
     if not check_mod(interaction):
         await interaction.edit_original_message(content="Mods only.")
         return
     try:
         message = await interaction.channel.fetch_message(message_id)
-        await message.add_reaction(emote)
-        await interaction.edit_original_message(content="Done.")
     except nextcord.NotFound or nextcord.HTTPException or nextcord.InvalidArgument:
         await interaction.edit_original_message(content="Message not found./Emote does not exist")
+        return
+    await message.add_reaction(emote)
+    await interaction.edit_original_message(content="Done.")
 
 
 @commands.guild_only()
@@ -277,6 +278,27 @@ async def secret(interaction: nextcord.Interaction):
             content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
     await interaction.edit_original_message(file=nextcord.File(r"./data/bday.json"))
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Edits a message Eevee sent. Mods only.")
+async def edit(interaction: nextcord.Interaction, message_id: int, content: str):
+    await interaction.response.defer(ephemeral=True)
+    if not check_mod(interaction):
+        await interaction.edit_original_message(content="Mods only.")
+        return
+    try:
+        message = await interaction.channel.fetch_message(message_id)
+    except:
+        await interaction.edit_original_message(content="Message not found.")
+        return
+    if message.author.id == client.user.id:
+        await message.edit(content=content)
+        await interaction.edit_original_message(content="Done.")
+    else:
+        await interaction.edit_original_message(content="That message is not mine!")
+
+
 
 
 @commands.guild_only()
