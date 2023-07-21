@@ -307,14 +307,12 @@ async def edit(interaction: nextcord.Interaction, message_id: str, content: str)
         await interaction.edit_original_message(content="That message is not mine!")
 
 
-
-
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Changes Eevee's activity. "
                                                          "Add url only when streaming. Owner only.")
 async def activity(interaction: nextcord.Interaction, activity_name: str, verb: str = nextcord.SlashOption(
-        required=True,
-        choices={"Play": "Playing", "Stream": "Streaming", "Listen": "Listening", "Watch": "Watching"}),
+    required=True,
+    choices={"Play": "Playing", "Stream": "Streaming", "Listen": "Listening", "Watch": "Watching"}),
                    url: str = None):
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
@@ -341,7 +339,7 @@ async def status(interaction: nextcord.Interaction, stat: str = nextcord.SlashOp
             content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
     status_dict = {"Online": nextcord.Status.online, "Idle": nextcord.Status.idle,
-             "DND": nextcord.Status.dnd, "Offline": nextcord.Status.offline}
+                   "DND": nextcord.Status.dnd, "Offline": nextcord.Status.offline}
     await interaction.response.defer(ephemeral=True)
     await client.change_presence(status=status_dict[stat])
     await interaction.edit_original_message(content=f"Done.")
