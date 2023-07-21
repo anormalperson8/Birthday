@@ -255,13 +255,17 @@ async def delete_user_birthday(interaction: nextcord.Interaction, user: nextcord
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Add a reaction to a message. Must be used in the same "
                                                          "channel as the target message. Mods only.")
-async def add_emote(interaction: nextcord.Interaction, message_id: int, emote: str):
+async def add_emote(interaction: nextcord.Interaction, message_id: str, emote: str):
     await interaction.response.defer(ephemeral=True)
     if not check_mod(interaction):
         await interaction.edit_original_message(content="Mods only.")
         return
     try:
-        message = await interaction.channel.fetch_message(message_id)
+        if message_id.isnumeric():
+            message = await interaction.channel.fetch_message(message_id)
+        else:
+            await interaction.edit_original_message(content="Not a valid id.")
+            return
     except nextcord.NotFound or nextcord.HTTPException or nextcord.InvalidArgument:
         await interaction.edit_original_message(content="Message not found./Emote does not exist")
         return
@@ -282,13 +286,17 @@ async def secret(interaction: nextcord.Interaction):
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Edits a message Eevee sent. Mods only.")
-async def edit(interaction: nextcord.Interaction, message_id: int, content: str):
+async def edit(interaction: nextcord.Interaction, message_id: str, content: str):
     await interaction.response.defer(ephemeral=True)
     if not check_mod(interaction):
         await interaction.edit_original_message(content="Mods only.")
         return
     try:
-        message = await interaction.channel.fetch_message(message_id)
+        if message_id.isnumeric():
+            message = await interaction.channel.fetch_message(message_id)
+        else:
+            await interaction.edit_original_message(content="Not a valid id.")
+            return
     except:
         await interaction.edit_original_message(content="Message not found.")
         return
