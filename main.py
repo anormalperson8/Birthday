@@ -276,7 +276,46 @@ async def secret(interaction: nextcord.Interaction):
         await interaction.edit_original_message(
             content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
-    await interaction.edit_original_message(file=discord.File(r"./data/bday.json"))
+    await interaction.edit_original_message(file=nextcord.File(r"./data/bday.json"))
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Changes Eevee's activity. "
+                                                         "Add url only when streaming. Owner only.")
+async def activity(interaction: nextcord.Interaction, activity_name: str, verb: str = nextcord.SlashOption(
+        required=True,
+        choices={"Play": "Playing", "Stream": "Streaming", "Listen": "Listening", "Watch": "Watching"}),
+                   url: str = None):
+    if interaction.user.id != owner_id:
+        await interaction.edit_original_message(
+            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+        return
+    verb_dict = {"Playing": nextcord.Game(name=activity_name),
+                 "Streaming": nextcord.Streaming(name=activity_name, url=url),
+                 "Listening": nextcord.Activity(type=nextcord.ActivityType.listening, name=activity_name),
+                 "Watching": nextcord.Activity(type=nextcord.ActivityType.watching, name=activity_name)}
+    await interaction.response.defer(ephemeral=True)
+    await client.change_presence(activity=verb_dict[verb])
+    await interaction.edit_original_message(content=f"Done. Activity is changed to \"{verb} {activity_name}\".")
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Changes Eevee's status. "
+                                                         "Add url only when streaming. Owner only.")
+async def status(interaction: nextcord.Interaction, stat: str = nextcord.SlashOption(
+    required=True,
+    choices={"Online": "Online", "Idle": "Idle",
+             "Do Not Disturb": "DND", "Offline": "Offline"})):
+    if interaction.user.id != owner_id:
+        await interaction.edit_original_message(
+            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+        return
+    status_dict = {"Online": nextcord.Status.online, "Idle": nextcord.Status.idle,
+             "DND": nextcord.Status.dnd, "Offline": nextcord.Status.offline}
+    await interaction.response.defer(ephemeral=True)
+    await client.change_presence(status=status_dict[stat])
+    await interaction.edit_original_message(content=f"Done.")
+
 
 
 async def ann():
