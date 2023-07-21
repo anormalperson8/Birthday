@@ -317,7 +317,6 @@ async def status(interaction: nextcord.Interaction, stat: str = nextcord.SlashOp
     await interaction.edit_original_message(content=f"Done.")
 
 
-
 async def ann():
     schedule_time = datetime.datetime.now()
     schedule_time = schedule_time.replace(hour=3, minute=30, second=0, microsecond=0)
