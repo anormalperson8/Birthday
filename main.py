@@ -1,14 +1,15 @@
 # Packages
+import discord
 import nextcord
 import os
 from dotenv import load_dotenv
 from nextcord.ext import commands, tasks
 import datetime
 import calendar
+import asyncio
 
 # Self .py files
 import birthday
-
 
 intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix='.', intents=intents, activity=nextcord.Game(name="Happy Birthday...?"))
@@ -31,9 +32,8 @@ perm = birthday.get_perm()
 @client.event
 async def on_ready():
     await client.wait_until_ready()
-
+    client.loop.create_task(ann())
     print('We have logged in as {0.user}'.format(client))
-    bday_announcement.start()
 
 
 # Response-testing command
@@ -74,58 +74,6 @@ def check_mod(interaction: nextcord.Interaction):
     return False
 
 
-# To be tested
-async def announce(user_id):
-    channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
-    channel = client.get_guild(int(os.getenv('OUTLET'))).get_channel(int(os.getenv('AN_ID')))
-    # DEBUG PURPOSES ONLY
-    # channel = channel_test
-    if len(user_id) == 1:
-        if user_id[0] == client.user.id:
-            await channel.send(f"It's my birthday today hehe <:EeveeLurk:991271779735719976>")
-        else:
-            await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
-                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
-        await channel_test.send(f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.")
-    elif len(user_id) == 2:
-        if client.user.id in user_id:
-            a = 1
-            if user_id[0] == client.user.id:
-                a = 0
-            await channel.send(f"It's <@{user_id[(a + 1) % 2]}>'s birthday, everyone wish them a happy birthday! "
-                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
-            await channel.send(f"It's also my birthday today hehe <:EeveeLurk:991271779735719976>")
-        else:
-            await channel.send(f"It's the birthday of <@{user_id[0]}> and <@{user_id[1]}>, "
-                           f"everyone wish them a happy birthday!\nHave a great day birthday stars! "
-                           f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
-        await channel_test.send(f"{client.get_user(int(user_id[0])).name} and "
-                                f"{client.get_user(int(user_id[1])).name}'s birthday message is sent.")
-    else:
-        stat = False
-        message = f"It's the birthday of "
-        for i in range(len(user_id) - 1):
-            if user_id[i] == client.user.id:
-                stat = True
-                continue
-            message += f"<@{user_id[i]}>"
-            if i != len(user_id) - 2:
-                message += ", "
-        message += (f" and <@{user_id[len(user_id) - 1]}>! Happy Birthday to all of them!"
-                    f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
-        await channel.send(message)
-        if stat:
-            await channel.send(
-                f"I guess I should also mention it's my birthday today as well <:EeveeLurk:991271779735719976>")
-        debug = "bday message of "
-        for j in range(len(user_id)):
-            if j != 0:
-                debug += ", "
-            debug += f"{client.get_user(int(user_id[j])).name}"
-        debug += " sent."
-        await channel_test.send(debug)
-
-
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="test")
 async def test(interaction: nextcord.Interaction, stat: int = 1):
@@ -142,11 +90,9 @@ async def test(interaction: nextcord.Interaction, stat: int = 1):
         await interaction.response.defer()
         await interaction.edit_original_message(content="test done <:EeveeUwU:965977552067899482>")
     else:
-        user_id = birthday.get_user()
-        if user_id is not None:
-            await announce(user_id)
         await interaction.response.defer()
-        await interaction.edit_original_message(content="test(0) done <:EeveeUwU:965977552067899482>")
+        await bday_announcement()
+        await interaction.edit_original_message(content="test (status: 1) done <:EeveeUwU:965977552067899482>")
 
 
 @commands.guild_only()
@@ -307,7 +253,49 @@ async def delete_user_birthday(interaction: nextcord.Interaction, user: nextcord
             content=f"{user.display_name}'s birthday does not exist in the system. <:EeveeCry:965985819057848320>")
 
 
-@tasks.loop(hours=23, minutes=59, seconds=59.0)
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Add a reaction to a message. Must be used in the same "
+                                                         "channel as the target message. Mods only.")
+async def add_emote(interaction: nextcord.Interaction, message_id: str, emote: str):
+    await interaction.response.defer(ephemeral=True)
+    if not check_mod(interaction):
+        await interaction.edit_original_message(content="Mods only.")
+        return
+    try:
+        message = await interaction.channel.fetch_message(message_id)
+        await message.add_reaction(emote)
+        await interaction.edit_original_message(content="Done.")
+    except nextcord.NotFound or nextcord.HTTPException or nextcord.InvalidArgument:
+        await interaction.edit_original_message(content="Message not found./Emote does not exist")
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Secret Command. Owner only.")
+async def secret(interaction: nextcord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+    if interaction.user.id != owner_id:
+        await interaction.edit_original_message(
+            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+        return
+    await interaction.edit_original_message(file=discord.File(r"./data/bday.json"))
+
+
+async def ann():
+    schedule_time = datetime.datetime.now()
+    schedule_time = schedule_time.replace(hour=3, minute=30, second=0, microsecond=0)
+    # DEBUG TIME PRINT COMMANDS
+    # print(schedule_time)
+    # print(f"Now: {datetime.datetime.now()}")
+    await client.wait_until_ready()
+    while not client.is_closed():
+        now = datetime.datetime.now()
+        if schedule_time <= now:
+            await bday_announcement()
+            # add one day to schedule_time to repeat on next day
+            schedule_time += datetime.timedelta(days=1)
+        await asyncio.sleep(200)
+
+
 async def bday_announcement():
     user_id = birthday.get_user()
     if user_id is not None:
@@ -316,18 +304,72 @@ async def bday_announcement():
         print("no message.")
 
 
+async def announce(user_id):
+    for i in user_id:
+        if not client.get_guild(int(os.getenv('OUTLET'))).get_member(i):
+            user_id.remove(i)
+    channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
+    channel = client.get_guild(int(os.getenv('OUTLET'))).get_channel(int(os.getenv('AN_ID')))
+    # DEBUG PURPOSES ONLY
+    # channel = channel_test
+    if len(user_id) == 1:
+        if user_id[0] == client.user.id:
+            await channel.send(f"It's my birthday today hehe <:EeveeLurk:991271779735719976>")
+        else:
+            await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
+                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
+        await channel_test.send(f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.")
+    elif len(user_id) == 2:
+        if client.user.id in user_id:
+            a = 1
+            if user_id[0] == client.user.id:
+                a = 0
+            await channel.send(f"It's <@{user_id[(a + 1) % 2]}>'s birthday, everyone wish them a happy birthday! "
+                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
+            await channel.send(f"It's also my birthday today hehe <:EeveeLurk:991271779735719976>")
+        else:
+            await channel.send(f"It's the birthday of <@{user_id[0]}> and <@{user_id[1]}>, "
+                               f"everyone wish them a happy birthday!\nHave a great day birthday stars! "
+                               f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
+        await channel_test.send(f"{client.get_user(int(user_id[0])).name} and "
+                                f"{client.get_user(int(user_id[1])).name}'s birthday message is sent.")
+    else:
+        stat = False
+        message = f"It's the birthday of "
+        for i in range(len(user_id) - 1):
+            if user_id[i] == client.user.id:
+                stat = True
+                continue
+            message += f"<@{user_id[i]}>"
+            if i != len(user_id) - 2:
+                message += ", "
+        message += (f" and <@{user_id[len(user_id) - 1]}>! Happy Birthday to all of them!"
+                    f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
+        await channel.send(message)
+        if stat:
+            await channel.send(
+                f"I guess I should also mention it's my birthday today as well <:EeveeLurk:991271779735719976>")
+        debug = "bday message of "
+        for j in range(len(user_id)):
+            if j != 0:
+                debug += ", "
+            debug += f"{client.get_user(int(user_id[j])).name}"
+        debug += " sent."
+        await channel_test.send(debug)
+
+
 # Easter eggs I guess
 @client.listen('on_message')
 async def on_message(message):
     if message.author.bot:
         return
-    if "I don't like birthdays" in message.content:
+    if "i don't like birthdays" in message.content.lower():
         name = message.author.nick
         if name is None:
             name = message.author.name
         await message.channel.send(f"You're mean, {name}. <:EeveeMegaSob:1084890813902884994>")
     elif "birthday eevee" in message.content.lower():
-        await message.channel.send(f"<:EeveeLurk:991271779735719976>?")
+        await message.add_reaction("<:EeveeLurk:991271779735719976>")
 
 
 client.run(token)
