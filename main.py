@@ -1,5 +1,4 @@
 # Packages
-import discord
 import nextcord
 import os
 from dotenv import load_dotenv
