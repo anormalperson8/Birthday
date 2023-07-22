@@ -366,6 +366,8 @@ async def bday_announcement():
     if user_id is not None:
         await announce(user_id)
     else:
+        channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
+        await channel_test.send(f"No message today. Today is {datetime.datetime.now().date()}.")
         print("no message.")
 
 
@@ -383,7 +385,8 @@ async def announce(user_id):
         else:
             await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
                                f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
-        await channel_test.send(f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.")
+        await channel_test.send(f"{client.get_user(int(user_id[0])).name}'s birthday message is sent. "
+                                f"Today is {datetime.datetime.now().date()}.")
     elif len(user_id) == 2:
         if client.user.id in user_id:
             a = 1
@@ -397,7 +400,8 @@ async def announce(user_id):
                                f"everyone wish them a happy birthday!\nHave a great day birthday stars! "
                                f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
         await channel_test.send(f"{client.get_user(int(user_id[0])).name} and "
-                                f"{client.get_user(int(user_id[1])).name}'s birthday message is sent.")
+                                f"{client.get_user(int(user_id[1])).name}'s birthday message is sent. "
+                                f"Today is {datetime.datetime.now().date()}.")
     else:
         stat = False
         message = f"It's the birthday of "
@@ -420,6 +424,7 @@ async def announce(user_id):
                 debug += ", "
             debug += f"{client.get_user(int(user_id[j])).name}"
         debug += " sent."
+        debug += f"Today is {datetime.datetime.now().date()}."
         await channel_test.send(debug)
 
 
