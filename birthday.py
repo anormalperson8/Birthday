@@ -81,6 +81,46 @@ def remove_date(user_id):
     return stat
 
 
+def get_month(date):
+    return date["month"]
+
+
+def get_day(date):
+    return date["day"]
+
+
+def coming_birthdays():
+    f = open(data_path + "bday.json", 'r')
+    data = json.load(f)
+    people_list = []
+    for person in data["people"]:
+        people_list.append(person)
+    people_list.sort(key=get_day)
+    people_list.sort(key=get_month)
+    month = datetime.datetime.now().month
+    day = datetime.datetime.now().day
+    count = 8
+    if len(people_list) < 8:
+        count = len(people_list)
+    ret = []
+    # Add all birthdays on/after this day
+    for i in people_list:
+        if count > 0:
+            if i["month"] >= month and i["day"] >= day:
+                ret.append(i)
+                count -= 1
+        else:
+            break
+    if count > 0:
+        for j in people_list:
+            if count > 0:
+                ret.append(j)
+                count -= 1
+            else:
+                break
+    return ret
+
+
 def get_perm():
     a = [int(os.getenv('TEST_CHANNEL')), int(os.getenv('MODERATOR_ONLY')), int(os.getenv('BOT_STUFF'))]
     return a
