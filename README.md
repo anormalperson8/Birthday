@@ -11,7 +11,7 @@ The bot is based mostly on slash commands.
 
 Planned aspects for Birthday Eevee has officially been done. This bot remembers birthdays of user in a Discord server, and announces on that day!
 
-The bot also comes with an echo function, and a moderator-induced emoji reacting.
+The bot also comes with an echo function, and a moderator-induced emoji reaction command.
 
 #### Version 1.0.1 (Minor Update)
 - Command for upcoming birthdays has been added.
