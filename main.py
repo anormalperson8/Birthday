@@ -496,7 +496,7 @@ async def coming_birthdays(interaction: nextcord.Interaction):
 async def on_message(message):
     if message.author.bot:
         return
-    if "i don't like birthdays" in message.content.lower():
+    if "i don't like birthdays" in message.content.lower() or "i dont like birthdays" in message.content.lower():
         name = message.author.nick
         if name is None:
             name = message.author.name
