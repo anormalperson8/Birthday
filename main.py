@@ -379,7 +379,11 @@ async def announce(user_id):
     channel = client.get_guild(int(os.getenv('OUTLET'))).get_channel(int(os.getenv('AN_ID')))
     # DEBUG PURPOSES ONLY
     # channel = channel_test
-    if len(user_id) == 1:
+    if len(user_id) == 0:
+        await channel_test.send(f"No message today. Today is {datetime.datetime.now().date()}.")
+        print("no message.")
+        return
+    elif len(user_id) == 1:
         if user_id[0] == client.user.id:
             await channel.send(f"It's my birthday today hehe <:EeveeLurk:991271779735719976>")
         else:
