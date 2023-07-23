@@ -126,7 +126,11 @@ async def ping(interaction: nextcord.Interaction):
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Get a member's birthday! You can even get mine!")
-async def get_birthday(interaction: nextcord.Interaction, user: nextcord.User = None):
+async def get_birthday(interaction: nextcord.Interaction,
+                       user: nextcord.User = nextcord.SlashOption(required=False,
+                                                                  description="The user whose birthday "
+                                                                              "you want to know.",
+                                                                  default=None)):
     if user is None:
         user = interaction.user
     stat = check_user(user.id, interaction)
@@ -179,14 +183,22 @@ def valid_date(year, month, day):
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Set your own birthday!")
-async def set_birthday(interaction: nextcord.Interaction, day: int, month: int, year: int = 1):
+async def set_birthday(interaction: nextcord.Interaction,
+                       day: int = nextcord.SlashOption(required=True, description="The day."),
+                       month: int = nextcord.SlashOption(required=True, description="The month."),
+                       year: int = nextcord.SlashOption(required=False, description="The year.", default=1)):
     await set_user_birthday(interaction, None, day, month, year)
 
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Set another user's birthday. Mods only")
-async def set_user_birthday(interaction: nextcord.Interaction, user: nextcord.User, day: int, month: int,
-                            year: int = 1):
+async def set_user_birthday(interaction: nextcord.Interaction,
+                            user: nextcord.User = nextcord.SlashOption(required=True,
+                                                                       description="The member whose birthday "
+                                                                                   "you want to set."),
+                            day: int = nextcord.SlashOption(required=True, description="The day."),
+                            month: int = nextcord.SlashOption(required=True, description="The month."),
+                            year: int = nextcord.SlashOption(required=False, description="The year.", default=1)):
     if user is not None:  # Check if it is a mod call or not
         if user.id == interaction.user.id:  # Wrong call
             await interaction.response.defer(ephemeral=True)
@@ -222,11 +234,14 @@ async def delete_birthday(interaction: nextcord.Interaction):
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Delete another user's birthday entry. Mods only.")
-async def delete_user_birthday(interaction: nextcord.Interaction, user: nextcord.User):
+async def delete_user_birthday(interaction: nextcord.Interaction,
+                               user: nextcord.User = nextcord.SlashOption(required=True,
+                                                                          description="The member whose birthday "
+                                                                                      "you want to delete.")):
     if user is not None:  # Check if it is a mod call or not
         if user.id == interaction.user.id:  # Wrong call
             await interaction.response.defer(ephemeral=True)
-            await interaction.edit_original_message(content="Wrong command. Use /delete_birthday to set your own!")
+            await interaction.edit_original_message(content="Wrong command. Use /delete_birthday to delete your own!")
             return
         elif not check_mod(interaction):  # Not a mod
             await interaction.response.defer(ephemeral=True)
@@ -255,7 +270,9 @@ async def delete_user_birthday(interaction: nextcord.Interaction, user: nextcord
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Add a reaction to a message. Must be used in the same "
                                                          "channel as the target message. Mods only.")
-async def add_emote(interaction: nextcord.Interaction, message_id: str, emote: str):
+async def add_emote(interaction: nextcord.Interaction,
+                    message_id: str = nextcord.SlashOption(required=True, description="The ID of the message."),
+                    emote: str = nextcord.SlashOption(required=True, description="The emoji you want to add.")):
     await interaction.response.defer(ephemeral=True)
     if not check_mod(interaction):
         await interaction.edit_original_message(content="Mods only.")
@@ -286,7 +303,9 @@ async def secret(interaction: nextcord.Interaction):
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Edits a message Eevee sent. Mods only.")
-async def edit(interaction: nextcord.Interaction, message_id: str, content: str):
+async def edit(interaction: nextcord.Interaction,
+               message_id: str= nextcord.SlashOption(required=True, description="The ID of the message."),
+               content: str = nextcord.SlashOption(required=True, description="The new content of the message.")):
     await interaction.response.defer(ephemeral=True)
     if not check_mod(interaction):
         await interaction.edit_original_message(content="Mods only.")
