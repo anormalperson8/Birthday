@@ -6,6 +6,7 @@ from nextcord.ext import commands, tasks
 import datetime
 import calendar
 import asyncio
+import random
 
 # Self .py files
 import birthday
@@ -367,7 +368,7 @@ async def status(interaction: nextcord.Interaction, stat: str = nextcord.SlashOp
 async def ann():
     schedule_time = datetime.datetime.now()
     schedule_time = schedule_time.replace(hour=3, minute=30, second=0, microsecond=0)
-    # DEBUG TIME PRINT COMMANDS
+    # DEBUG PRINTING COMMANDS
     # print(schedule_time)
     # print(f"Now: {datetime.datetime.now()}")
     await client.wait_until_ready()
@@ -399,8 +400,9 @@ async def announce(user_id):
     # DEBUG PURPOSES ONLY
     # channel = channel_test
     if len(user_id) == 0:
-        await channel_test.send(f"No message today. Today is {datetime.datetime.now().date()}.")
-        print("no message.")
+        await channel_test.send(
+            f"No message today. Today is {datetime.datetime.now().date()}.There is at least one birthday today")
+        print("no message. yes birthday.")
         return
     elif len(user_id) == 1:
         if user_id[0] == client.user.id:
@@ -449,6 +451,44 @@ async def announce(user_id):
         debug += " sent."
         debug += f"Today is {datetime.datetime.now().date()}."
         await channel_test.send(debug)
+
+
+def check_tomorrow(month, day, year):
+    today = datetime.datetime.now().date()
+    date = datetime.date(year, month, day)
+    if (date - today).days == 1:
+        return True
+    return False
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Lists out future birthdays.")
+async def coming_birthdays(interaction: nextcord.Interaction):
+    colours = {1: nextcord.Colour.red(),
+               2: nextcord.Colour.orange(),
+               3: nextcord.Colour.yellow(),
+               4: nextcord.Colour.green(),
+               5: nextcord.Colour.blue(),
+               6: nextcord.Colour.purple(),
+               7: nextcord.Colour.dark_purple()}
+    await interaction.response.defer()
+    coming = birthday.coming_birthdays()
+    random.seed(datetime.datetime.now().timestamp())
+    colour = colours[random.randint(1, 7)]
+    des = f""
+    today = datetime.datetime.now()
+    for i in coming:
+        if today.month == i['month'] and today.day == i['day']:
+            des += f"**Today**\n" + f"<@{i['id']}>\n\n"
+            continue
+        if check_tomorrow(i['month'], i['day'], today.year):
+            des += f"**Tomorrow**\n" + f"<@{i['id']}>\n\n"
+            continue
+        des += f"**{i['day']} {calendar.month_name[i['month']]}**\n" + f"<@{i['id']}>\n\n"
+    await interaction.edit_original_message(embeds=[
+        nextcord.Embed(title="Upcoming Birthdays <:EeveeUwU:965977552067899482>",
+                       description=des,
+                       colour=colour)])
 
 
 # Easter eggs I guess
