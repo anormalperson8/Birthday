@@ -392,7 +392,7 @@ async def ann():
             await bday_announcement()
             # add one day to schedule_time to repeat on next day
             schedule_time += datetime.timedelta(days=1)
-        await asyncio.sleep(200)
+        await asyncio.sleep(10)
 
 
 async def bday_announcement():
