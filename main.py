@@ -45,6 +45,20 @@ async def boo(ctx):
     await ctx.send(f"Oi")
 
 
+def timestamp():
+    now = datetime.datetime.now()
+    a = f"Today is {now.date().day} {calendar.month_name[now.date().month]}, {now.date().year}\n" \
+        f"The time (hh/mm/ss) now is {now.time().hour}:{now.time().minute}:{now.time().second}."
+    return a
+
+
+@client.command()
+async def time(ctx):
+    if ctx.author.id != owner_id:
+        return
+    await ctx.send(timestamp())
+
+
 @commands.guild_only()
 @client.command()
 async def echo(ctx, *, arg):
@@ -370,7 +384,7 @@ async def ann():
     schedule_time = schedule_time.replace(hour=3, minute=30, second=0, microsecond=0)
     # DEBUG PRINTING COMMANDS
     # print(schedule_time)
-    # print(f"Now: {datetime.datetime.now()}")
+    # print(timestamp())
     await client.wait_until_ready()
     while not client.is_closed():
         now = datetime.datetime.now()
@@ -387,7 +401,7 @@ async def bday_announcement():
         await announce(user_id)
     else:
         channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
-        await channel_test.send(f"No message today. Today is {datetime.datetime.now().date()}.")
+        await channel_test.send(f"No message today.\n{timestamp()}")
         print("no message.")
 
 
@@ -401,8 +415,8 @@ async def announce(user_id):
     # channel = channel_test
     if len(user_id) == 0:
         await channel_test.send(
-            f"No message today. Today is {datetime.datetime.now().date()}.There is at least one birthday today")
-        print("no message. yes birthday.")
+            f"No message today.\n{timestamp()}\nThere is at least one birthday today")
+        print(f"no message. yes birthday.")
         return
     elif len(user_id) == 1:
         if user_id[0] == client.user.id:
@@ -410,8 +424,7 @@ async def announce(user_id):
         else:
             await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
                                f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
-        await channel_test.send(f"{client.get_user(int(user_id[0])).name}'s birthday message is sent. "
-                                f"Today is {datetime.datetime.now().date()}.")
+        await channel_test.send(f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.\n{timestamp()}")
     elif len(user_id) == 2:
         if client.user.id in user_id:
             a = 1
@@ -425,8 +438,7 @@ async def announce(user_id):
                                f"everyone wish them a happy birthday!\nHave a great day birthday stars! "
                                f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
         await channel_test.send(f"{client.get_user(int(user_id[0])).name} and "
-                                f"{client.get_user(int(user_id[1])).name}'s birthday message is sent. "
-                                f"Today is {datetime.datetime.now().date()}.")
+                                f"{client.get_user(int(user_id[1])).name}'s birthday message is sent.\n{timestamp()}")
     else:
         stat = False
         message = f"It's the birthday of "
@@ -449,7 +461,7 @@ async def announce(user_id):
                 debug += ", "
             debug += f"{client.get_user(int(user_id[j])).name}"
         debug += " sent."
-        debug += f"Today is {datetime.datetime.now().date()}."
+        debug += f"\n{timestamp()}"
         await channel_test.send(debug)
 
 
@@ -464,6 +476,10 @@ def check_tomorrow(month, day, year):
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Lists out future birthdays.")
 async def coming_birthdays(interaction: nextcord.Interaction):
+    if interaction.channel_id not in perm:
+        await interaction.response.defer(ephemeral=True)
+        await interaction.edit_original_message(content="This is the wrong channel!")
+        return
     colours = {1: nextcord.Colour.red(),
                2: nextcord.Colour.orange(),
                3: nextcord.Colour.yellow(),
