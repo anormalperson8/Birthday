@@ -12,7 +12,8 @@ import random
 import birthday
 
 intents = nextcord.Intents.all()
-client = commands.Bot(command_prefix='.', intents=intents, activity=nextcord.Game(name="Happy Birthday...?"))
+client = commands.Bot(command_prefix='.', intents=intents,
+                      activity=nextcord.Game(name="Happy Birthday...?"), help_command=None)
 
 path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(path)
@@ -56,7 +57,7 @@ def timestamp():
 async def time(ctx):
     if ctx.author.id != owner_id:
         return
-    await ctx.send(timestamp())
+    await ctx.send(f"Time check!\n{timestamp()}")
 
 
 @commands.guild_only()
@@ -380,8 +381,7 @@ async def status(interaction: nextcord.Interaction, stat: str = nextcord.SlashOp
 
 
 async def ann():
-    schedule_time = datetime.datetime.now()
-    schedule_time = schedule_time.replace(hour=3, minute=30, second=0, microsecond=0)
+    schedule_time = datetime.datetime.now().replace(hour=2, minute=0, second=0, microsecond=0)
     # DEBUG PRINTING COMMANDS
     # print(schedule_time)
     # print(timestamp())
@@ -473,13 +473,7 @@ def check_tomorrow(month, day, year):
     return False
 
 
-@commands.guild_only()
-@client.slash_command(guild_ids=guilds_list, description="Lists out future birthdays.")
-async def coming_birthdays(interaction: nextcord.Interaction):
-    if interaction.channel_id not in perm:
-        await interaction.response.defer(ephemeral=True)
-        await interaction.edit_original_message(content="This is the wrong channel!")
-        return
+def random_colour():
     colours = {1: nextcord.Colour.red(),
                2: nextcord.Colour.orange(),
                3: nextcord.Colour.yellow(),
@@ -487,10 +481,19 @@ async def coming_birthdays(interaction: nextcord.Interaction):
                5: nextcord.Colour.blue(),
                6: nextcord.Colour.purple(),
                7: nextcord.Colour.dark_purple()}
+    random.seed(datetime.datetime.now().timestamp())
+    return colours[random.randint(1, 7)]
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Lists out future birthdays.")
+async def coming_birthdays(interaction: nextcord.Interaction):
+    if interaction.channel_id not in perm:
+        await interaction.response.defer(ephemeral=True)
+        await interaction.edit_original_message(content="This is the wrong channel!")
+        return
     await interaction.response.defer()
     coming = birthday.coming_birthdays()
-    random.seed(datetime.datetime.now().timestamp())
-    colour = colours[random.randint(1, 7)]
     des = f""
     today = datetime.datetime.now()
     for i in coming:
@@ -504,7 +507,23 @@ async def coming_birthdays(interaction: nextcord.Interaction):
     await interaction.edit_original_message(embeds=[
         nextcord.Embed(title="Upcoming Birthdays <:EeveeUwU:965977552067899482>",
                        description=des,
-                       colour=colour)])
+                       colour=random_colour())])
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="My info!")
+async def info(interaction: nextcord.Interaction):
+    if interaction.channel_id not in perm:
+        await interaction.response.defer(ephemeral=True)
+        await interaction.edit_original_message(content="This is the wrong channel!")
+        return
+    await interaction.response.defer()
+
+    await interaction.edit_original_message(embeds=[
+        nextcord.Embed(title="Birthday Eevee <:EeveeWave:1062326395935674489>",
+                       description="Coming soon!\nStay tuned! <:EeveeLurk:991271779735719976>",
+                       colour=random_colour(),
+                       url="https://github.com/anormalperson8/Birthday")])
 
 
 # Easter eggs I guess
