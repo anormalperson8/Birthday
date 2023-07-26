@@ -48,7 +48,7 @@ async def boo(ctx):
 def timestamp():
     now = datetime.datetime.now()
     a = f"Today is {now.date().day} {calendar.month_name[now.date().month]}, {now.date().year}\n" \
-        f"The time (hh/mm/ss) now is {now.time().hour}:{now.time().minute}:{now.time().second}."
+        f"The time (hh/mm/ss) now is {now.time().hour:02}:{now.time().minute:02}:{now.time().second:02}."
     return a
 
 
