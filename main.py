@@ -43,7 +43,7 @@ async def boo(ctx):
     if ctx.author.bot:
         await ctx.send("You're not a user :P")
         return
-    await ctx.send(f"Oi")
+    await ctx.send(f"Oi.")
 
 
 def timestamp():
@@ -510,20 +510,101 @@ async def coming_birthdays(interaction: nextcord.Interaction):
                        colour=random_colour())])
 
 
-@commands.guild_only()
-@client.slash_command(guild_ids=guilds_list, description="My info!")
-async def info(interaction: nextcord.Interaction):
-    if interaction.channel_id not in perm:
-        await interaction.response.defer(ephemeral=True)
-        await interaction.edit_original_message(content="This is the wrong channel!")
-        return
-    await interaction.response.defer()
+class Pages(nextcord.ui.View):
 
-    await interaction.edit_original_message(embeds=[
-        nextcord.Embed(title="Birthday Eevee <:EeveeWave:1062326395935674489>",
-                       description="Coming soon!\nStay tuned! <:EeveeLurk:991271779735719976>",
-                       colour=random_colour(),
-                       url="https://github.com/anormalperson8/Birthday")])
+    def __init__(self, *, timeout=180, pages=None, page_number=0, ctx=None):
+        super().__init__(timeout=timeout)
+        if pages is None:
+            pages = []
+        self.pages = pages
+        self.page_number = page_number
+        self.ctx = ctx
+
+    @nextcord.ui.button(label="", style=nextcord.ButtonStyle.gray, emoji="⬅️", disabled=False)
+    async def previous_button(self, button: nextcord.ui.button, interaction):
+        if self.page_number <= 0:
+            await interaction.response.send_message("You are already at the first page! <:EeveeOwO:965977455791857695>",
+                                                    ephemeral=True)
+        else:
+            self.page_number -= 1
+        print(f"Page number: {self.page_number}")
+        await interaction.response.edit_message(view=self, content="",
+                                                embed=self.pages[self.page_number])
+
+    @nextcord.ui.button(label="", style=nextcord.ButtonStyle.gray, emoji="➡️", disabled=False)
+    async def next_button_(self, button: nextcord.ui.button, interaction: nextcord.Interaction):
+        if self.page_number >= 2:
+            await interaction.response.send_message("You are already at the last page! <:EeveeOwO:965977455791857695>",
+                                                    ephemeral=True)
+        else:
+            self.page_number += 1
+        print(f"Page number: {self.page_number}")
+        await interaction.response.edit_message(view=self, content="",
+                                                embed=self.pages[self.page_number])
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="My info!")  # Create a slash command
+async def info(ctx):
+    if ctx.channel_id not in perm:
+        await ctx.response.defer(ephemeral=True)
+        await ctx.edit_original_message(content="This is the wrong channel!")
+        return
+    title = "Birthday Eevee <:EeveeWave:1062326395935674489>"
+    url = "https://github.com/anormalperson8/Birthday"
+    colour = random_colour()
+    page1 = nextcord.Embed(title=title,
+                           description="# Server Global Commands\n"
+                                       "The following commands can be used by all users of Outlet.\n"
+                                       "## Slash Commands\n"
+                                       "**coming_birthdays**\nThis command shows future birthdays of the server.\n"
+                                       "(At most 8.)\n"
+                                       "**set_birthday**\nThis command adds your own birthday to the bot.\n"
+                                       "Requires at least your birth month and birth day.\n"
+                                       "**delete_birthday**\nThis command removes your own birthday from the bot.\n"
+                                       ""
+                                       "**get_birthday**\nThis command allows you to get a user's birthday.\n"
+                                       "The bot assumes your own if no user is given.\n"
+                                       "**ping**\nTest command.\n"
+                                       "**info**\nThis command.\n"
+                                       "## Text Commands (Prefix: `.`)\n"
+                                       "**boo**\nOi.",
+                           colour=colour, url=url)
+    page2 = nextcord.Embed(title=title,
+                           description="# Moderator Commands\n"
+                                       "The following commands can only be used by moderators of Outlet.\n"
+                                       "## Slash Commands\n"
+                                       "**set_user_birthday**\nThis command sets a user's birthday to the bot.\n"
+                                       "Same as **set_birthday**, but cannot be used to set your own.\n"
+                                       "**delete_user_birthday**\nThis command deletes a user's birthday.\n"
+                                       "Same as **delete_birthday**, but cannot be used to delete your own.\n"
+                                       "**add_reaction**\nThis commands lets "
+                                       "Birthday Eevee add a reaction to a message.\n"
+                                       "(Only accepts default emojis or emojis of Outlet.)\n"
+                                       "Message ID and emotes are required for the command.\n"
+                                       "**edit**\nThis commands edits a message Birthday Eevee sent.\n"
+                                       "Message ID and content are requried for the command.\n"
+                                       "## Text Commands (Prefix: `.`)\n"
+                                       "**echo**\nBirthday Eevee echos what you say.",
+                           colour=colour, url=url)
+    page3 = nextcord.Embed(title=title,
+                           description="# Owner Commands\n"
+                                       "Don't try it. They can only be used by the owner.\n"
+                                       "## Slash Commands\n"
+                                       "**test**\nDon't try it.\n"
+                                       "**checkers**\nDon't try it.\n"
+                                       "**status**\nDon't try it.\n"
+                                       "**activity**\nDon't try it.\n"
+                                       "**secret**\nIt *literally* says secret.\n"
+                                       "## Text Commands (prefix: `.`)\n"
+                                       "**time**\nYou won't get any response if you're not the owner.",
+                           colour=colour, url=url)
+    pages = [page1, page2, page3]
+    image = "https://cdn.discordapp.com/attachments/1117033415305347073/1133685861318414497/BdayEevee.png"
+    for i in range(len(pages)):
+        pages[i].set_thumbnail(image)
+        pages[i].set_footer(text=f"Page {i+1}/3")
+    await ctx.response.send_message(content="", embed=page1, view=Pages(pages=pages))
 
 
 # Easter eggs I guess
