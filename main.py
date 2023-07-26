@@ -527,18 +527,16 @@ class Pages(nextcord.ui.View):
                                                     ephemeral=True)
         else:
             self.page_number -= 1
-        print(f"Page number: {self.page_number}")
         await interaction.response.edit_message(view=self, content="",
                                                 embed=self.pages[self.page_number])
 
     @nextcord.ui.button(label="", style=nextcord.ButtonStyle.gray, emoji="➡️", disabled=False)
-    async def next_button_(self, button: nextcord.ui.button, interaction: nextcord.Interaction):
+    async def next_button(self, button: nextcord.ui.button, interaction: nextcord.Interaction):
         if self.page_number >= 2:
             await interaction.response.send_message("You are already at the last page! <:EeveeOwO:965977455791857695>",
                                                     ephemeral=True)
         else:
             self.page_number += 1
-        print(f"Page number: {self.page_number}")
         await interaction.response.edit_message(view=self, content="",
                                                 embed=self.pages[self.page_number])
 
