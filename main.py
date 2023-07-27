@@ -474,13 +474,13 @@ def check_tomorrow(month, day, year):
 
 
 def random_colour():
-    colours = {1: nextcord.Colour.red(),
-               2: nextcord.Colour.orange(),
-               3: nextcord.Colour.yellow(),
-               4: nextcord.Colour.green(),
-               5: nextcord.Colour.blue(),
-               6: nextcord.Colour.purple(),
-               7: nextcord.Colour.dark_purple()}
+    colours = [nextcord.Colour.red(),
+               nextcord.Colour.orange(),
+               nextcord.Colour.yellow(),
+               nextcord.Colour.green(),
+               nextcord.Colour.blue(),
+               nextcord.Colour.purple(),
+               nextcord.Colour.dark_purple()]
     random.seed(datetime.datetime.now().timestamp())
     return colours[random.randint(1, 7)]
 
