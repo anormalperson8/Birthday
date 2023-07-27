@@ -99,14 +99,20 @@ def coming_birthdays():
     people_list.sort(key=get_month)
     month = datetime.datetime.now().month
     day = datetime.datetime.now().day
-    count = 8
-    if len(people_list) < 8:
+    count = 10
+    if len(people_list) < 10:
         count = len(people_list)
     ret = []
     # Add all birthdays on/after this day
     for i in people_list:
+        print(f"Object {i}")
         if count > 0:
-            if i["month"] >= month and i["day"] >= day:
+            if i["month"] > month:
+                print(f"Appended {i}")
+                ret.append(i)
+                count -= 1
+            elif i["month"] == month and i["day"] >= day:
+                print(f"Appended {i}")
                 ret.append(i)
                 count -= 1
         else:
@@ -125,7 +131,3 @@ def get_perm():
     a = [int(os.getenv('TEST_CHANNEL')), int(os.getenv('MODERATOR_ONLY')), int(os.getenv('BOT_STUFF'))]
     return a
 
-
-# debug print
-# print(get_date(1117746108161081344).strftime("%Y"))
-# print(datetime.datetime.now())
