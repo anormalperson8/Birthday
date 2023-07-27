@@ -487,7 +487,7 @@ def random_colour():
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Lists out future birthdays.")
-async def coming_birthdays(interaction: nextcord.Interaction):
+async def upcoming_birthdays(interaction: nextcord.Interaction):
     if interaction.channel_id not in perm:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(content="This is the wrong channel!")
@@ -555,7 +555,7 @@ async def info(ctx):
                            description="# Server Global Commands\n"
                                        "The following commands can be used by all users of Outlet.\n"
                                        "## Slash Commands\n"
-                                       "**coming_birthdays**\nThis command shows future birthdays of the server.\n"
+                                       "**upcoming_birthdays**\nThis command shows future birthdays of the server.\n"
                                        "(At most 8.)\n"
                                        "**set_birthday**\nThis command adds your own birthday to the bot.\n"
                                        "Requires at least your birth month and birth day.\n"
