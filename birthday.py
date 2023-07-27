@@ -105,14 +105,11 @@ def coming_birthdays():
     ret = []
     # Add all birthdays on/after this day
     for i in people_list:
-        print(f"Object {i}")
         if count > 0:
             if i["month"] > month:
-                print(f"Appended {i}")
                 ret.append(i)
                 count -= 1
             elif i["month"] == month and i["day"] >= day:
-                print(f"Appended {i}")
                 ret.append(i)
                 count -= 1
         else:
