@@ -90,8 +90,10 @@ def check_mod(interaction: nextcord.Interaction):
 
 
 @commands.guild_only()
-@client.slash_command(guild_ids=guilds_list, description="test")
-async def test(interaction: nextcord.Interaction, stat: int = 1):
+@client.slash_command(guild_ids=guilds_list, description="Test command. Owner only")
+async def test(interaction: nextcord.Interaction,
+               stat: int = nextcord.SlashOption(default=1, required=False,
+                                                description="0 to forcefully start announcing birthday. 1 otherwise.")):
     if interaction.user.id != owner_id:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(
@@ -111,7 +113,7 @@ async def test(interaction: nextcord.Interaction, stat: int = 1):
 
 
 @commands.guild_only()
-@client.slash_command(guild_ids=guilds_list, description="Checkers. Not the board game one.")
+@client.slash_command(guild_ids=guilds_list, description="Checkers. Not the board game one. Owner only.")
 async def checkers(interaction: nextcord.Interaction):
     if interaction.user.id != owner_id:
         await interaction.response.defer(ephemeral=True)
@@ -322,7 +324,7 @@ async def secret(interaction: nextcord.Interaction):
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Edits a message Eevee sent. Mods only.")
 async def edit(interaction: nextcord.Interaction,
-               message_id: str= nextcord.SlashOption(required=True, description="The ID of the message."),
+               message_id: str = nextcord.SlashOption(required=True, description="The ID of the message."),
                content: str = nextcord.SlashOption(required=True, description="The new content of the message.")):
     await interaction.response.defer(ephemeral=True)
     if not check_mod(interaction):
@@ -347,10 +349,17 @@ async def edit(interaction: nextcord.Interaction,
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Changes Eevee's activity. "
                                                          "Add url only when streaming. Owner only.")
-async def activity(interaction: nextcord.Interaction, activity_name: str, verb: str = nextcord.SlashOption(
-    required=True,
-    choices={"Play": "Playing", "Stream": "Streaming", "Listen": "Listening", "Watch": "Watching"}),
-                   url: str = None):
+async def activity(interaction: nextcord.Interaction,
+                   activity_name: str = nextcord.SlashOption(required=True, description="The name of the application."),
+                   verb: str = nextcord.SlashOption(
+                       required=True,
+                       choices={"Play": "Playing", "Stream": "Streaming", "Listen": "Listening", "Watch": "Watching"},
+                       description="The action."),
+                   url: str = nextcord.SlashOption(
+                       required=False,
+                       description="The url. Add only when streaming.",
+                       default=None)):
+    await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
             content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
@@ -359,7 +368,6 @@ async def activity(interaction: nextcord.Interaction, activity_name: str, verb: 
                  "Streaming": nextcord.Streaming(name=activity_name, url=url),
                  "Listening": nextcord.Activity(type=nextcord.ActivityType.listening, name=activity_name),
                  "Watching": nextcord.Activity(type=nextcord.ActivityType.watching, name=activity_name)}
-    await interaction.response.defer(ephemeral=True)
     await client.change_presence(activity=verb_dict[verb])
     await interaction.edit_original_message(content=f"Done. Activity is changed to \"{verb} {activity_name}\".")
 
@@ -367,10 +375,12 @@ async def activity(interaction: nextcord.Interaction, activity_name: str, verb: 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Changes Eevee's status. "
                                                          "Add url only when streaming. Owner only.")
-async def status(interaction: nextcord.Interaction, stat: str = nextcord.SlashOption(
-    required=True,
-    choices={"Online": "Online", "Idle": "Idle",
-             "Do Not Disturb": "DND", "Offline": "Offline"})):
+async def status(interaction: nextcord.Interaction,
+                 stat: str = nextcord.SlashOption(
+                     required=True,
+                     choices={"Online": "Online", "Idle": "Idle",
+                              "Do Not Disturb": "DND", "Offline": "Offline"},
+                     description="The status.")):
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
@@ -603,7 +613,7 @@ async def info(ctx):
     image = "https://cdn.discordapp.com/attachments/1117033415305347073/1133685861318414497/BdayEevee.png"
     for i in range(len(pages)):
         pages[i].set_thumbnail(image)
-        pages[i].set_footer(text=f"Page {i+1}/3")
+        pages[i].set_footer(text=f"Page {i + 1}/3")
     await ctx.response.send_message(content="", embed=page1, view=Pages(pages=pages))
 
 
