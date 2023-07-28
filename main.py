@@ -371,13 +371,13 @@ async def status(interaction: nextcord.Interaction, stat: str = nextcord.SlashOp
     required=True,
     choices={"Online": "Online", "Idle": "Idle",
              "Do Not Disturb": "DND", "Offline": "Offline"})):
+    await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
             content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
     status_dict = {"Online": nextcord.Status.online, "Idle": nextcord.Status.idle,
                    "DND": nextcord.Status.dnd, "Offline": nextcord.Status.offline}
-    await interaction.response.defer(ephemeral=True)
     await client.change_presence(status=status_dict[stat])
     await interaction.edit_original_message(content=f"Done.")
 
