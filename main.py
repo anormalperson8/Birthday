@@ -138,7 +138,7 @@ async def checkers(interaction: nextcord.Interaction):
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Pong!")
 async def ping(interaction: nextcord.Interaction):
-    await interaction.response.defer()
+    await interaction.response.defer(ephemeral=True)
     await interaction.edit_original_message(content="Pong!")
 
 
@@ -588,14 +588,15 @@ async def info(ctx):
                                        "Same as **set_birthday**, but cannot be used to set your own.\n"
                                        "**delete_user_birthday**\nThis command deletes a user's birthday.\n"
                                        "Same as **delete_birthday**, but cannot be used to delete your own.\n"
-                                       "**add_reaction**\nThis commands lets "
+                                       "**add_emote**\nThis commands lets "
                                        "Birthday Eevee add a reaction to a message.\n"
                                        "(Only accepts default emojis or emojis of Outlet.)\n"
                                        "Message ID and emotes are required for the command.\n"
                                        "**edit**\nThis commands edits a message Birthday Eevee sent.\n"
                                        "Message ID and content are requried for the command.\n"
                                        "## Text Commands (Prefix: `.`)\n"
-                                       "**echo**\nBirthday Eevee echos what you say.",
+                                       "**echo**\nBirthday Eevee echos what you say.\n"
+                                       "You won't get any response if you're not a moderator.",
                            colour=colour, url=url)
     page3 = nextcord.Embed(title=title,
                            description="# Owner Commands\n"
@@ -606,7 +607,7 @@ async def info(ctx):
                                        "**status**\nDon't try it.\n"
                                        "**activity**\nDon't try it.\n"
                                        "**secret**\nIt *literally* says secret.\n"
-                                       "## Text Commands (prefix: `.`)\n"
+                                       "## Text Commands (Prefix: `.`)\n"
                                        "**time**\nYou won't get any response if you're not the owner.",
                            colour=colour, url=url)
     pages = [page1, page2, page3]
