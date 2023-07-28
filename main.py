@@ -97,7 +97,7 @@ async def test(interaction: nextcord.Interaction,
     if interaction.user.id != owner_id:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(
-            content="This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+            content="This is for the owner not you <:sunebleh:1134343350133202975>")
         return
     if interaction.channel_id not in perm:
         await interaction.response.defer(ephemeral=True)
@@ -118,7 +118,7 @@ async def checkers(interaction: nextcord.Interaction):
     if interaction.user.id != owner_id:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(
-            content="This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+            content="This is for the owner not you <:sunebleh:1134343350133202975>")
         return
     bday_list = birthday.get_user()
     if bday_list is None:
@@ -362,7 +362,7 @@ async def activity(interaction: nextcord.Interaction,
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
-            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+            content="Did you not read the description? This is for the owner not you <:sunebleh:1134343350133202975>")
         return
     verb_dict = {"Playing": nextcord.Game(name=activity_name),
                  "Streaming": nextcord.Streaming(name=activity_name, url=url),
@@ -384,7 +384,7 @@ async def status(interaction: nextcord.Interaction,
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
-            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+            content="Did you not read the description? This is for the owner not you <:sunebleh:1134343350133202975>")
         return
     status_dict = {"Online": nextcord.Status.online, "Idle": nextcord.Status.idle,
                    "DND": nextcord.Status.dnd, "Offline": nextcord.Status.offline}
@@ -593,7 +593,7 @@ async def info(ctx):
                                        "(Only accepts default emojis or emojis of Outlet.)\n"
                                        "Message ID and emotes are required for the command.\n"
                                        "**edit**\nThis commands edits a message Birthday Eevee sent.\n"
-                                       "Message ID and content are requried for the command.\n"
+                                       "Message ID and content are required for the command.\n"
                                        "## Text Commands (Prefix: `.`)\n"
                                        "**echo**\nBirthday Eevee echos what you say.\n"
                                        "You won't get any response if you're not a moderator.",
