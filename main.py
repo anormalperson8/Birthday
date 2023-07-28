@@ -558,7 +558,7 @@ async def info(ctx):
                                        "The following commands can be used by all users of Outlet.\n"
                                        "## Slash Commands\n"
                                        "**upcoming_birthdays**\nThis command shows future birthdays of the server.\n"
-                                       "(At most 8.)\n"
+                                       "(At most 10.)\n"
                                        "**set_birthday**\nThis command adds your own birthday to the bot.\n"
                                        "Requires at least your birth month and birth day.\n"
                                        "**delete_birthday**\nThis command removes your own birthday from the bot.\n"
