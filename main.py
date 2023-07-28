@@ -312,7 +312,9 @@ async def secret(interaction: nextcord.Interaction):
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
-            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+            embed=nextcord.Embed(colour=random_colour(), title="This is a secret🤫",
+                                 url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                                 description="There is totally no link at the title."))
         return
     await interaction.edit_original_message(file=nextcord.File(r"./data/bday.json"))
 
@@ -503,7 +505,7 @@ async def upcoming_birthdays(interaction: nextcord.Interaction):
         if check_tomorrow(i['month'], i['day'], today.year):
             des += f"**Tomorrow**\n" + f"<@{i['id']}>\n\n"
             continue
-        des += f"**{i['day']} {calendar.month_name[i['month']]}**\n" + f"<@{i['id']}>\n\n"
+        des += f"**{i['day']:02} {calendar.month_name[i['month']]}**\n" + f"<@{i['id']}>\n\n"
     await interaction.edit_original_message(embeds=[
         nextcord.Embed(title="Upcoming Birthdays <:EeveeUwU:965977552067899482>",
                        description=des,
