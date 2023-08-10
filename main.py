@@ -406,7 +406,6 @@ async def ann():
             day_in_file = weekday_file.read()
             weekday_file.close()
             if int(day_in_file) != day:
-                print(day_in_file)
                 weekday_file = open(data_path + "/day.txt", "w")
                 weekday_file.write(str(day))
                 weekday_file.close()
