@@ -81,4 +81,5 @@ fabric.properties
 /data/
 /data/data.env
 /data/bday.json
+/data/day.txt
 
