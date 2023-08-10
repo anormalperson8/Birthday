@@ -12,8 +12,7 @@ import random
 import birthday
 
 intents = nextcord.Intents.all()
-client = commands.Bot(command_prefix='.', intents=intents,
-                      activity=nextcord.Game(name="Happy Birthday...?"), help_command=None)
+client = commands.Bot(command_prefix='.', intents=intents, help_command=None)
 
 path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(path)
