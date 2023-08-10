@@ -351,7 +351,7 @@ async def edit(interaction: nextcord.Interaction,
 @client.slash_command(guild_ids=guilds_list, description="Changes Eevee's activity. "
                                                          "Add url only when streaming. Owner only.")
 async def activity(interaction: nextcord.Interaction,
-                   activity_name: str = nextcord.SlashOption(required=True, description="The name of the application."
+                   activity_name: str = nextcord.SlashOption(required=True, description="The name of the application. "
                                                                                         "Put anything when deleting."),
                    verb: str = nextcord.SlashOption(
                        required=True,
@@ -373,10 +373,12 @@ async def activity(interaction: nextcord.Interaction,
                  "Watching": nextcord.Activity(type=nextcord.ActivityType.watching, name=activity_name),
                  "None": None}
     await client.change_presence(activity=verb_dict[verb])
-    if verb != "None":
-        await interaction.edit_original_message(content=f"Done. Activity is changed to \"{verb} {activity_name}\".")
-    else:
+    if verb == "None":
         await interaction.edit_original_message(content=f"Done. Activity is deleted.")
+    elif verb == "Listening":
+        await interaction.edit_original_message(content=f"Done. Activity is changed to \"{verb} to {activity_name}\".")
+    else:
+        await interaction.edit_original_message(content=f"Done. Activity is changed to \"{verb} {activity_name}\".")
 
 
 @commands.guild_only()
