@@ -351,10 +351,12 @@ async def edit(interaction: nextcord.Interaction,
 @client.slash_command(guild_ids=guilds_list, description="Changes Eevee's activity. "
                                                          "Add url only when streaming. Owner only.")
 async def activity(interaction: nextcord.Interaction,
-                   activity_name: str = nextcord.SlashOption(required=True, description="The name of the application."),
+                   activity_name: str = nextcord.SlashOption(required=True, description="The name of the application."
+                                                                                        "Put anything when deleting."),
                    verb: str = nextcord.SlashOption(
                        required=True,
-                       choices={"Play": "Playing", "Stream": "Streaming", "Listen": "Listening", "Watch": "Watching"},
+                       choices={"Play": "Playing", "Stream": "Streaming",
+                                "Listen": "Listening", "Watch": "Watching", "Delete": "None"},
                        description="The action."),
                    url: str = nextcord.SlashOption(
                        required=False,
@@ -368,9 +370,13 @@ async def activity(interaction: nextcord.Interaction,
     verb_dict = {"Playing": nextcord.Game(name=activity_name),
                  "Streaming": nextcord.Streaming(name=activity_name, url=url),
                  "Listening": nextcord.Activity(type=nextcord.ActivityType.listening, name=activity_name),
-                 "Watching": nextcord.Activity(type=nextcord.ActivityType.watching, name=activity_name)}
+                 "Watching": nextcord.Activity(type=nextcord.ActivityType.watching, name=activity_name),
+                 "None": None}
     await client.change_presence(activity=verb_dict[verb])
-    await interaction.edit_original_message(content=f"Done. Activity is changed to \"{verb} {activity_name}\".")
+    if verb != "None":
+        await interaction.edit_original_message(content=f"Done. Activity is changed to \"{verb} {activity_name}\".")
+    else:
+        await interaction.edit_original_message(content=f"Done. Activity is deleted.")
 
 
 @commands.guild_only()
