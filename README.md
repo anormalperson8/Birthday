@@ -13,8 +13,8 @@ Planned aspects for Birthday Eevee has officially been done. This bot remembers 
 
 The bot also comes with an echo function, and a moderator-induced emoji reaction command.
 
-#### Version 1.0.2 
-- Info slash command has been added.
+#### Version 1.0.3
+- Code has been added to prevent duplication in announcement.
 
 
 ### [main.py](/main.py)
