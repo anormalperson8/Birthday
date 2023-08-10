@@ -49,7 +49,8 @@ async def boo(ctx):
 def timestamp():
     now = datetime.datetime.now()
     a = f"Today is {now.date().day} {calendar.month_name[now.date().month]}, {now.date().year}\n" \
-        f"The time (hh/mm/ss) now is {now.time().hour:02}:{now.time().minute:02}:{now.time().second:02}."
+        f"The time (hh/mm/ss) now is {now.time().hour:02}:{now.time().minute:02}:{now.time().second:02}.\n" \
+        f"Today is {calendar.day_name[now.weekday()]}."
     return a
 
 
@@ -401,10 +402,13 @@ async def ann():
     while not client.is_closed():
         now = datetime.datetime.now()
         if schedule_time <= now:
-            weekday_file = open(data_path + "/day.txt", "r")
             day = now.weekday()
-            day_in_file = weekday_file.read()
-            weekday_file.close()
+            if os.path.isfile(data_path + "/day.txt"):
+                weekday_file = open(data_path + "/day.txt", "r")
+                day_in_file = weekday_file.read()
+                weekday_file.close()
+            else:
+                day_in_file = (day + 6) % 7 # Previous day
             if int(day_in_file) != day:
                 weekday_file = open(data_path + "/day.txt", "w")
                 weekday_file.write(str(day))
