@@ -408,7 +408,7 @@ async def ann():
                 day_in_file = weekday_file.read()
                 weekday_file.close()
             else:
-                day_in_file = (day + 6) % 7 # Previous day
+                day_in_file = (day + 6) % 7  # Previous day
             if int(day_in_file) != day:
                 weekday_file = open(data_path + "/day.txt", "w")
                 weekday_file.write(str(day))
