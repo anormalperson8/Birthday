@@ -401,7 +401,16 @@ async def ann():
     while not client.is_closed():
         now = datetime.datetime.now()
         if schedule_time <= now:
-            await bday_announcement()
+            weekday_file = open(data_path + "/day.txt", "r")
+            day = now.weekday()
+            day_in_file = weekday_file.read()
+            weekday_file.close()
+            if int(day_in_file) != day:
+                print(day_in_file)
+                weekday_file = open(data_path + "/day.txt", "w")
+                weekday_file.write(str(day))
+                weekday_file.close()
+                await bday_announcement()
             # add one day to schedule_time to repeat on next day
             schedule_time += datetime.timedelta(days=1)
         await asyncio.sleep(10)
