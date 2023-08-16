@@ -171,17 +171,34 @@ async def get_birthday(interaction: nextcord.Interaction,
             content=f"{user.display_name}'s birthday does not exist in the system. <:EeveeCry:965985819057848320>")
         return
     postfix = 'th'
-    if (day % 10 == 1) and (day // 10 != 1):
-        postfix = 'st'
-    elif (day % 10 == 2) and (day // 10 != 1):
-        postfix = 'nd'
-    elif (day % 10 == 3) and (day // 10 != 1):
-        postfix = 'rd'
+    if day // 10 != 1:
+        if day % 10 == 1:
+            postfix = 'st'
+        elif day % 10 == 2:
+            postfix = 'nd'
+        elif day % 10 == 3:
+            postfix = 'rd'
     year_phrase = ""
     if year != 1:
         year_phrase = ", " + str(year)
-    await interaction.edit_original_message(
-        content=f"{user.display_name}'s birthday is on {day}{postfix} {month}{year_phrase}.")
+
+    phrase = f"on **{day}{postfix} {month}{year_phrase}**."
+
+    now = datetime.datetime(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
+    if (date.month >= now.month) and (date.day >= now.day):
+        next_bday = (datetime.datetime(now.year, date.month, date.day) - now).days
+    else:
+        next_bday = (datetime.datetime(now.year + 1, date.month, date.day) - now).days
+
+    if next_bday == 0:
+        await interaction.edit_original_message(
+            content=f"It is {user.display_name}'s birthday today, {phrase}")
+    elif next_bday == 1:
+        await interaction.edit_original_message(
+            content=f"Tomorrow is {user.display_name}'s next birthday, {phrase}")
+    else:
+        await interaction.edit_original_message(
+            content=f"{user.display_name}'s next birthday is in **{next_bday}** days, {phrase}")
 
 
 def valid_date(year, month, day):
