@@ -13,8 +13,8 @@ Planned aspects for Birthday Eevee has officially been done. This bot remembers 
 
 The bot also comes with an echo function, and a moderator-induced emoji reaction command.
 
-#### Version 1.0.3
-- Code has been added to prevent duplication in announcement.
+#### Version 1.0.4
+- Added display of time difference to the user's next birthday in get_birthday command.
 
 
 ### [main.py](/main.py)
