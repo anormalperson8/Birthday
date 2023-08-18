@@ -34,7 +34,7 @@ async def on_ready():
     await client.wait_until_ready()
     client.loop.create_task(ann())
     print('We have logged in as {0.user}'.format(client))
-    await client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL'))).send("Bot on.")
+    await client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL'))).send("Bot is on.")
 
 
 # Response-testing command
