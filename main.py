@@ -61,7 +61,6 @@ async def time(ctx):
     await ctx.send(f"Time check!\n{timestamp()}")
 
 
-@commands.guild_only()
 @client.command()
 async def echo(ctx, *, arg):
     await ctx.message.delete()
@@ -136,7 +135,6 @@ async def checkers(interaction: nextcord.Interaction):
     await interaction.edit_original_message(content=f"{message}")
 
 
-@commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Pong!")
 async def ping(interaction: nextcord.Interaction):
     await interaction.response.defer(ephemeral=True)
