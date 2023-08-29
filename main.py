@@ -65,7 +65,7 @@ async def time(ctx):
 async def echo(ctx, *, arg):
     await ctx.message.delete()
     for role in ctx.message.author.roles:
-        if role.id in mod_role_id:
+        if role.id in mod_role_id or ctx.author.id == owner_id:
             await ctx.send(arg)
             return
 
