@@ -328,7 +328,8 @@ async def add_emote(interaction: nextcord.Interaction,
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Secret Command. Owner only.")
-async def secret(interaction: nextcord.Interaction):
+async def secret(interaction: nextcord.Interaction,
+                 number: int = nextcord.SlashOption(required=False, description="A number.", default=1)):
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
@@ -336,7 +337,13 @@ async def secret(interaction: nextcord.Interaction):
                                  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                                  description="There is totally no link at the title."))
         return
-    await interaction.edit_original_message(file=nextcord.File(r"./data/bday.json"))
+    if number:
+        await interaction.edit_original_message(files=[nextcord.File(r"./data/bday.json"),
+                                                       nextcord.File(r"./data/day.txt")])
+    else:
+        await interaction.edit_original_message(files=[nextcord.File(r"./data/bday.json"),
+                                                       nextcord.File(r"./data/day.txt"),
+                                                       nextcord.File(r"./data/data.env")])
 
 
 @commands.guild_only()
