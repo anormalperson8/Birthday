@@ -44,6 +44,8 @@ async def boo(ctx):
         await ctx.send("You're not a user :P")
         return
     await ctx.send(f"Oi.")
+    if ctx.author.id == owner_id:
+        await client.get_user(owner_id).send(f"<@{owner_id}>")
 
 
 def timestamp():
@@ -61,6 +63,7 @@ async def time(ctx):
     await ctx.send(f"Time check!\n{timestamp()}")
 
 
+@commands.guild_only()
 @client.command()
 async def echo(ctx, *, arg):
     await ctx.message.delete()
