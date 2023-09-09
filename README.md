@@ -5,6 +5,8 @@ Written specifically for a friend's Discord server.
 
 Also used as an exercise to familiarise myself with the syntax of Python programming language.
 
+This project contains a lot of spaghetti code.
+
 
 ## Version 1.0
 The bot is based mostly on slash commands.
