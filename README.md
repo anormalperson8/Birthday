@@ -15,8 +15,9 @@ Planned aspects for Birthday Eevee has officially been done. This bot remembers 
 
 The bot also comes with an echo function, and a moderator-induced emoji reaction command.
 
-#### Version 1.0.4
-- Added display of time difference to the user's next birthday in get_birthday command.
+#### Version 1.0.5
+- Added ability to delete birthdays of members that are not in the guild anymore.
+- Added a filter of non-guild members in upcoming birthday command.
 
 
 ### [main.py](/main.py)
