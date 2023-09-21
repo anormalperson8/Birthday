@@ -549,12 +549,16 @@ async def upcoming_birthdays(interaction: nextcord.Interaction):
         await interaction.edit_original_message(content="This is the wrong channel!")
         return
     await interaction.response.defer()
-    coming = birthday.coming_birthdays()
-    for i in coming:
+    temp_coming = birthday.coming_birthdays()
+    for i in temp_coming:
         if not client.get_guild(int(os.getenv('OUTLET'))).get_member(i["id"]):
-            coming.remove(i)
+            temp_coming.remove(i)
     des = f""
     today = datetime.datetime.now()
+    length = 10
+    if len(temp_coming) < 10:
+        length = len(temp_coming)
+    coming = [temp_coming[i] for i in range(length)]
     for i in coming:
         if today.month == i['month'] and today.day == i['day']:
             des += f"**Today**\n" + f"<@{i['id']}>\n\n"
