@@ -12,7 +12,8 @@ import random
 import birthday
 
 intents = nextcord.Intents.all()
-client = commands.Bot(command_prefix='.', intents=intents, help_command=None)
+client = commands.Bot(command_prefix='.', intents=intents, help_command=None,
+                      activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="The Passage of Time"))
 
 path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(path)
@@ -289,12 +290,10 @@ async def delete_user_birthday(interaction: nextcord.Interaction,
     if user is None:
         user = interaction.user
     stat = check_user(user.id, interaction)
-    if stat == 0 or stat == 1:  # Wrong channel or member not in server
+    if stat == 1:  # Wrong channel
         await interaction.response.defer(ephemeral=True)
-        if stat:
-            await interaction.edit_original_message(content="This is the wrong channel!")
-            return
-        await interaction.edit_original_message(content="Member is not in server.")
+        await interaction.edit_original_message(content="This is the wrong channel!")
+        # await interaction.edit_original_message(content="Member is not in server.")
         return
     await interaction.response.defer()
     stat = birthday.remove_date(user.id)
@@ -552,6 +551,9 @@ async def upcoming_birthdays(interaction: nextcord.Interaction):
         return
     await interaction.response.defer()
     coming = birthday.coming_birthdays()
+    for i in coming:
+        if not client.get_guild(int(os.getenv('OUTLET'))).get_member(i):
+            coming.remove(i)
     des = f""
     today = datetime.datetime.now()
     for i in coming:

@@ -99,28 +99,19 @@ def coming_birthdays():
     people_list.sort(key=get_month)
     month = datetime.datetime.now().month
     day = datetime.datetime.now().day
-    count = 10
-    if len(people_list) < 10:
-        count = len(people_list)
+    count = 0
     ret = []
     # Add all birthdays on/after this day
     for i in people_list:
-        if count > 0:
-            if i["month"] > month:
-                ret.append(i)
-                count -= 1
-            elif i["month"] == month and i["day"] >= day:
-                ret.append(i)
-                count -= 1
-        else:
-            break
-    if count > 0:
-        for j in people_list:
-            if count > 0:
-                ret.append(j)
-                count -= 1
-            else:
-                break
+        if i["month"] > month:
+            ret.append(i)
+            count += 1
+        elif i["month"] == month and i["day"] >= day:
+            ret.append(i)
+            count += 1
+    for j in range(len(people_list) - count):
+        ret.append(people_list[j])
+        count += 1
     return ret
 
 
