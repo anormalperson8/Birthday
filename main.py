@@ -472,8 +472,7 @@ async def announce(user_id):
     # channel = channel_test
     if len(user_id) == 0:
         await channel_test.send(
-            f"No message today.\n{timestamp()}\nThere is at least one birthday today")
-        print(f"no message. yes birthday.")
+            f"No message today.\n{timestamp()}\nThere is at least one birthday today though.")
         return
     elif len(user_id) == 1:
         if user_id[0] == client.user.id:
@@ -552,7 +551,7 @@ async def upcoming_birthdays(interaction: nextcord.Interaction):
     await interaction.response.defer()
     coming = birthday.coming_birthdays()
     for i in coming:
-        if not client.get_guild(int(os.getenv('OUTLET'))).get_member(i):
+        if not client.get_guild(int(os.getenv('OUTLET'))).get_member(i["id"]):
             coming.remove(i)
     des = f""
     today = datetime.datetime.now()
