@@ -13,7 +13,7 @@ Just like the first version, the bot is based mostly on slash commands.
 
 The bot has been updated to accommodate multiple servers!
 
-This bot remembers birthdays of user in a Discord server, and announces them on the relevant day.
+This bot remembers birthdays of users in a Discord server, and announces them on the relevant day.
 
 
 #### Version 2.0.0
