@@ -1,23 +1,24 @@
 # Birthday Eevee
 
 A Discord bot for storing birthdays, and announces when the date matches.<br/>
-Written specifically for a friend's Discord server.
+Written specifically for friends' Discord servers.
 
 Also used as an exercise to familiarise myself with the syntax of Python programming language.
 
-This project contains a lot of spaghetti code.
+This project contains a lot of spaghetti codes.
 
 
-## Version 1.0
-The bot is based mostly on slash commands.
+## Version 2.0
+Just like the first version, the bot is based mostly on slash commands.
 
-Planned aspects for Birthday Eevee has officially been done. This bot remembers birthdays of user in a Discord server, and announces on that day!
+The bot has been updated to accommodate multiple servers!
 
-The bot also comes with an echo function, and a moderator-induced emoji reaction command.
+This bot remembers birthdays of user in a Discord server, and announces them on the relevant day.
 
-#### Version 1.0.5
-- Added ability to delete birthdays of members that are not in the guild anymore.
-- Added a filter of non-guild members in upcoming birthday command.
+
+#### Version 2.0.0
+- Added support to multiple servers
+- Tried (Keyword: Tried) to make the code a little bit nicer to read. Just a *tiny little bit*. Still very spaghetti.
 
 
 ### [main.py](/main.py)
@@ -25,6 +26,12 @@ The file that stores all the commands and interactions.
 
 ### [birthday.py](/birthday.py)
 The file that stores all the code that is used to read/write data.
+
+### [info_command.py](/info_command.py)
+The file that stores contents of the **/info** command, as there are a lot of text in that.
+
+### [server_info.py](/server_info.py)
+The file that stores all the code that is used to retrieve server data, such as its ID of the announcement channel.
 
 ### [Dependencies](/requirements.txt)
 This file holds packages one needs to additionally install to host this bot.
