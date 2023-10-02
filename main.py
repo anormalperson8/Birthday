@@ -499,7 +499,7 @@ async def bday_announcement():
         # Test server is hard-coded as the first server and only 1 allowed channel
         test_server = server_info.get_servers()[0]
         channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
-        await channel_test.send(f"No message today.\n{timestamp()}")
+        await channel_test.send(f"No message for all servers today.\n{timestamp()}")
         print("No message.")
 
 
@@ -522,7 +522,7 @@ async def announce(user_id: list, server: server_info.Server):
     channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
     channel = client.get_guild(server.serverID).get_channel(server.announcementChannel)
     # DEBUG PURPOSES ONLY
-    # channel = channel_test
+    channel = channel_test
     # print(f"for channel {server.serverID} {role}")
     if len(user_id) == 0:
         await channel_test.send(
