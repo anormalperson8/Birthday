@@ -19,7 +19,7 @@ def create_page(title: str, url: str, page: int):
     if page == 1:
         return nextcord.Embed(title=title,
                               description="# Server Global Commands\n"
-                                          "The following commands can be used by all users of Outlet.\n"
+                                          "The following commands can be used by all users of the server.\n"
                                           "## Slash Commands\n"
                                           "**upcoming_birthdays**\nThis command shows future birthdays of the server.\n"
                                           "(At most 10.)\n"
@@ -37,12 +37,12 @@ def create_page(title: str, url: str, page: int):
     elif page == 2:
         return nextcord.Embed(title=title,
                               description="# Moderator Commands\n"
-                                          "The following commands can only be used by moderators of Outlet.\n"
+                                          "The following commands can only be used by moderators of the server.\n"
                                           "## Slash Commands\n"
                                           "**set_user_birthday**\nThis command sets a user's birthday to the bot.\n"
-                                          "Same as **set_birthday**, but cannot be used to set your own.\n"
+                                          "Same as **set_birthday**.\n"
                                           "**delete_user_birthday**\nThis command deletes a user's birthday.\n"
-                                          "Same as **delete_birthday**, but cannot be used to delete your own.\n"
+                                          "Same as **delete_birthday**.\n"
                                           "**add_emote**\nThis commands lets "
                                           "Birthday Eevee add a reaction to a message.\n"
                                           "(Only accepts default emojis or emojis of Outlet.)\n"
