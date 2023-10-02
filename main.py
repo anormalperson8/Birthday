@@ -23,8 +23,6 @@ load_dotenv(f"{data_path}/data.env")
 
 token = os.getenv('TOKEN')
 owner_id = int(os.getenv('ID'))
-# mod_role_id = [int(os.getenv('MOD_ID')), int(os.getenv('ADMIN_TEST_ID'))]
-# community = int(os.getenv('COM_ID'))
 guilds_list = []
 for guild in client.guilds:
     guilds_list.append(int(guild.id))
