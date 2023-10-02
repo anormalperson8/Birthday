@@ -10,6 +10,7 @@ import asyncio
 # Self .py files
 import birthday
 import info_command
+import server_info
 
 intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix='.', intents=intents, help_command=None,
@@ -22,12 +23,12 @@ load_dotenv(f"{data_path}/data.env")
 
 token = os.getenv('TOKEN')
 owner_id = int(os.getenv('ID'))
-mod_role_id = [int(os.getenv('MOD_ID')), int(os.getenv('ADMIN_TEST_ID'))]
-community = int(os.getenv('COM_ID'))
+# mod_role_id = [int(os.getenv('MOD_ID')), int(os.getenv('ADMIN_TEST_ID'))]
+# community = int(os.getenv('COM_ID'))
 guilds_list = []
 for guild in client.guilds:
     guilds_list.append(int(guild.id))
-perm = birthday.get_perm()
+servers = server_info.get_servers()
 
 
 @client.event
@@ -35,7 +36,9 @@ async def on_ready():
     await client.wait_until_ready()
     client.loop.create_task(ann())
     print('We have logged in as {0.user}'.format(client))
-    await client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL'))).send("Bot is on.")
+    test_server = server_info.get_servers()[0]
+    channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
+    await channel_test.send("Bot is on.")
 
 
 # Response-testing command
@@ -66,22 +69,25 @@ async def time(ctx):
 @client.command()
 async def echo(ctx, *, arg):
     await ctx.message.delete()
+    # Owner Privileges
     if ctx.author.id == owner_id:
         await ctx.send(arg)
         return
+    # Check Mod
     for role in ctx.message.author.roles:
-        if role.id in mod_role_id:
+        if role.id in server_info.search_for_server(servers, ctx.message.guild_id).moderatorRoles:
             await ctx.send(arg)
             return
 
 
-# Check whether the member is in the server, and whether the channel is allowed to use the command
+# Check whether the member is in the server, and whether users are allowed to use commands in the channel
 def check_user(user_id, interaction):
     # Block users not in server
     if interaction.guild.get_member(user_id) is None:
         return 0
     # Only allow specific channels
-    if interaction.channel_id not in perm:
+    server = server_info.search_for_server(servers, interaction.guild_id)
+    if interaction.channel_id not in server.allowedChannels:
         return 1
     return None
 
@@ -89,7 +95,7 @@ def check_user(user_id, interaction):
 # Check whether a user is mod
 def check_mod(interaction: nextcord.Interaction):
     for role in interaction.user.roles:
-        if role.id in mod_role_id:
+        if role.id in server_info.search_for_server(servers, interaction.guild_id).moderatorRoles:
             return True
     return False
 
@@ -99,37 +105,45 @@ def check_mod(interaction: nextcord.Interaction):
 async def test(interaction: nextcord.Interaction,
                stat: int = nextcord.SlashOption(default=1, required=False,
                                                 description="0 to forcefully start announcing birthday. 1 otherwise.")):
+    # Owner only
     if interaction.user.id != owner_id:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(
             content="This is for the owner not you <:sunnyyBleh:1134343350133202975>")
         return
-    if interaction.channel_id not in perm:
+    # Check channel
+    if interaction.channel_id not in server_info.search_for_server(servers, interaction.guild_id).allowedChannels:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(content=f"<@{interaction.user.id}> This is the wrong test channel!")
         return
+
+    # Force announce?
     if stat:
         await interaction.response.defer()
         await interaction.edit_original_message(content="test done <:EeveeUwU:965977552067899482>")
     else:
         await interaction.response.defer()
         await bday_announcement()
-        await interaction.edit_original_message(content="test (status: 1) done <:EeveeUwU:965977552067899482>")
+        await interaction.edit_original_message(content="test (status: 0) done <:EeveeUwU:965977552067899482>")
 
 
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Checkers. Not the board game one. Owner only.")
 async def checkers(interaction: nextcord.Interaction):
+    # Owner
     if interaction.user.id != owner_id:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(
             content="This is for the owner not you <:sunnyBleh:1134343350133202975>")
         return
+
     bday_list = birthday.get_user()
+    # No birthdays
     if bday_list is None:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(content="No bdays today.")
         return
+
     message = "It's the bday of "
     for i in range(len(bday_list)):
         if i != 0:
@@ -153,9 +167,13 @@ async def get_birthday(interaction: nextcord.Interaction,
                                                                   description="The user whose birthday "
                                                                               "you want to know.",
                                                                   default=None)):
+    # Default option of user
     if user is None:
         user = interaction.user
+
     stat = check_user(user.id, interaction)
+
+    # 0 means user is not in server, 1 means wrong channel
     if stat == 0 or stat == 1:
         await interaction.response.defer(ephemeral=True)
         if stat:
@@ -163,16 +181,21 @@ async def get_birthday(interaction: nextcord.Interaction,
             return
         await interaction.edit_original_message(content="Member is not in server.")
         return
+
     await interaction.response.defer()
     date = birthday.get_date(user.id)
-    if date is not None:
-        day = int(date.day)
-        month = date.strftime("%B")
-        year = int(date.strftime("%Y"))
-    else:
+
+    if date is None:
         await interaction.edit_original_message(
             content=f"{user.display_name}'s birthday does not exist in the system. <:EeveeCry:965985819057848320>")
         return
+
+    # Generate the date string if date exists
+    day = int(date.day)
+    month = date.strftime("%B")
+    year = int(date.strftime("%Y"))
+
+    # Generate postfix of the date
     postfix = 'th'
     if day // 10 != 1:
         if day % 10 == 1:
@@ -181,12 +204,15 @@ async def get_birthday(interaction: nextcord.Interaction,
             postfix = 'nd'
         elif day % 10 == 3:
             postfix = 'rd'
+
+    # If the user included the year
     year_phrase = ""
     if year != 1:
         year_phrase = ", " + str(year)
 
     phrase = f"on **{day}{postfix} {month}{year_phrase}**."
 
+    # Calculate date difference
     now = datetime.datetime(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
     if (date.month >= now.month) and (date.day >= now.day):
         next_bday = (datetime.datetime(now.year, date.month, date.day) - now).days
@@ -207,16 +233,24 @@ async def get_birthday(interaction: nextcord.Interaction,
 def valid_date(year, month, day):
     if year < 1 or month < 1 or month > 12 or year > 2023 or day < 1 or day > 31:
         return False
+
+    # Check for 29th Feb in leap years
     if month == 2 and day > 28:
-        if calendar.isleap(year) or year == 1:
+        if calendar.isleap(year) and day == 29:
             return True
         return False
-    if month % 2 == 0 and month <= 7 and day > 30:
+
+    # On or before July, odd-numbered months have 31 days
+    if month <= 7 and month % 2 == 0 and day > 30:
         return False
-    if month % 2 == 1 and month > 7 and day > 30:
+    # After July, even-numbered months have 31 days
+    if month > 7 and month % 2 == 1 and day > 30:
         return False
+
+    # Birthday in the future?
     if datetime.datetime.now() < datetime.datetime(year=year, month=month, day=day):
         return False
+
     return True
 
 
@@ -238,29 +272,32 @@ async def set_user_birthday(interaction: nextcord.Interaction,
                             day: int = nextcord.SlashOption(required=True, description="The day."),
                             month: int = nextcord.SlashOption(required=True, description="The month."),
                             year: int = nextcord.SlashOption(required=False, description="The year.", default=1)):
-    if user is not None:  # Check if it is a mod call or not
-        if user.id == interaction.user.id:  # Wrong call
-            await interaction.response.defer(ephemeral=True)
-            await interaction.edit_original_message(content="Wrong command. Use /set_birthday to set your own!")
-            return
-        elif not check_mod(interaction):  # Not a mod
-            await interaction.response.defer(ephemeral=True)
-            await interaction.edit_original_message(content="You do not have the permission to add others' birthdays!")
-            return
+    # Check if it is a mod call or not
+    if user is not None and not check_mod(interaction):
+        await interaction.response.defer(ephemeral=True)
+        await interaction.edit_original_message(content="You do not have the permission to add others' birthdays!")
+        return
+
+    # Setting own birthday
     if user is None:
         user = interaction.user
+
     stat = check_user(user.id, interaction)
-    if stat == 0 or stat == 1:  # Wrong channel or member not in server
+
+    # Wrong channel or member not in server
+    if stat == 0 or stat == 1:
         await interaction.response.defer(ephemeral=True)
         if stat:
             await interaction.edit_original_message(content="This is the wrong channel!")
             return
         await interaction.edit_original_message(content="Member is not in server.")
         return
+
     await interaction.response.defer()
     if not valid_date(year, month, day):
         await interaction.edit_original_message(content="Invalid Birthday! <:EeveeOwO:965977455791857695>")
         return
+
     birthday.set_date(user.id, year, month, day)
     await interaction.edit_original_message(content="Birthday updated! <:EeveeCool:1007625997719449642>")
 
@@ -277,25 +314,26 @@ async def delete_user_birthday(interaction: nextcord.Interaction,
                                user: nextcord.User = nextcord.SlashOption(required=True,
                                                                           description="The member whose birthday "
                                                                                       "you want to delete.")):
-    if user is not None:  # Check if it is a mod call or not
-        if user.id == interaction.user.id:  # Wrong call
-            await interaction.response.defer(ephemeral=True)
-            await interaction.edit_original_message(content="Wrong command. Use /delete_birthday to delete your own!")
-            return
-        elif not check_mod(interaction):  # Not a mod
-            await interaction.response.defer(ephemeral=True)
-            await interaction.edit_original_message(
-                content="You do not have the permission to delete others' birthdays!")
-            return
+    # Check if it is a mod call or not
+    if user is not None and not check_mod(interaction):
+        await interaction.response.defer(ephemeral=True)
+        await interaction.edit_original_message(content="You do not have the permission to delete others' birthdays!")
+        return
+
     if user is None:
         user = interaction.user
+
     stat = check_user(user.id, interaction)
-    if stat == 1:  # Wrong channel
+    if stat == 0 or stat == 1:
         await interaction.response.defer(ephemeral=True)
-        await interaction.edit_original_message(content="This is the wrong channel!")
-        # await interaction.edit_original_message(content="Member is not in server.")
+        if stat:
+            await interaction.edit_original_message(content="This is the wrong channel!")
+            return
+        await interaction.edit_original_message(content="You cannot delete a member's birthday "
+                                                        "if the member not in this server.")
         return
     await interaction.response.defer()
+
     stat = birthday.remove_date(user.id)
     if stat:
         await interaction.edit_original_message(content="Birthday deleted.")
@@ -321,7 +359,7 @@ async def add_emote(interaction: nextcord.Interaction,
             await interaction.edit_original_message(content="Not a valid id.")
             return
     except nextcord.NotFound or nextcord.HTTPException or nextcord.InvalidArgument:
-        await interaction.edit_original_message(content="Message not found./Emote does not exist")
+        await interaction.edit_original_message(content="Message not found./Emote does not exist.")
         return
     await message.add_reaction(emote)
     await interaction.edit_original_message(content="Done.")
@@ -336,7 +374,7 @@ async def secret(interaction: nextcord.Interaction,
         await interaction.edit_original_message(
             embed=nextcord.Embed(colour=info_command.random_colour(), title="This is a secret🤫",
                                  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                                 description="There is totally no link at the title."))
+                                 description="There is totally not a link at the title."))
         return
     if number:
         await interaction.edit_original_message(files=[nextcord.File(r"./data/bday.json"),
@@ -362,7 +400,7 @@ async def edit(interaction: nextcord.Interaction,
         else:
             await interaction.edit_original_message(content="Not a valid id.")
             return
-    except:
+    except nextcord.NotFound or nextcord.HTTPException or nextcord.InvalidArgument:
         await interaction.edit_original_message(content="Message not found.")
         return
     if message.author.id == client.user.id:
@@ -427,7 +465,7 @@ async def status(interaction: nextcord.Interaction,
 
 
 async def ann():
-    schedule_time = datetime.datetime.now().replace(hour=2, minute=0, second=0, microsecond=0)
+    schedule_time = datetime.datetime.now().replace(hour=0, minute=30, second=0, microsecond=0)
     # DEBUG PRINTING COMMANDS
     # print(schedule_time)
     # print(timestamp())
@@ -455,23 +493,40 @@ async def ann():
 async def bday_announcement():
     user_id = birthday.get_user()
     if user_id is not None:
-        await announce(user_id)
+        for server in servers:
+            await announce(list(user_id), server)
     else:
-        channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
+        # Test server is hard-coded as the first server and only 1 allowed channel
+        test_server = server_info.get_servers()[0]
+        channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
         await channel_test.send(f"No message today.\n{timestamp()}")
-        print("no message.")
+        print("No message.")
 
 
-async def announce(user_id):
+async def announce(user_id: list, server: server_info.Server):
+    # No announcement in that channel
+    if server.announcementChannel == 1:
+        return
+
+    # Remove all members not in the server
     for i in user_id:
-        if not client.get_guild(int(os.getenv('OUTLET'))).get_member(i):
+        if client.get_guild(server.serverID).get_member(i) is None:
             user_id.remove(i)
-    channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
-    channel = client.get_guild(int(os.getenv('OUTLET'))).get_channel(int(os.getenv('AN_ID')))
+
+    role = f"<@&{server.role_to_ping}>"
+    if server.role_to_ping == 1:
+        role = f":D"
+
+    # Test server is hard-coded as the first server and only 1 allowed channel
+    test_server = server_info.get_servers()[0]
+    channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
+    channel = client.get_guild(server.serverID).get_channel(server.announcementChannel)
     # DEBUG PURPOSES ONLY
-    channel = channel_test
+    # channel = channel_test
+    # print(f"for channel {server.serverID} {role}")
     if len(user_id) == 0:
         await channel_test.send(
+            f"For server {server.serverID}:\n"
             f"No message today.\n{timestamp()}\nThere is at least one birthday today though.")
         return
     elif len(user_id) == 1:
@@ -479,21 +534,24 @@ async def announce(user_id):
             await channel.send(f"It's my birthday today hehe <:EeveeLurk:991271779735719976>")
         else:
             await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
-                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
-        await channel_test.send(f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.\n{timestamp()}")
+                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n"
+                               f"{role}")
+        await channel_test.send(f"For server {server.serverID}:\n"
+                                f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.\n{timestamp()}")
     elif len(user_id) == 2:
         if client.user.id in user_id:
             a = 1
             if user_id[0] == client.user.id:
                 a = 0
             await channel.send(f"It's <@{user_id[(a + 1) % 2]}>'s birthday, everyone wish them a happy birthday! "
-                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n<@&{community}>")
+                               f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n{role}")
             await channel.send(f"It's also my birthday today hehe <:EeveeLurk:991271779735719976>")
         else:
             await channel.send(f"It's the birthday of <@{user_id[0]}> and <@{user_id[1]}>, "
                                f"everyone wish them a happy birthday!\nHave a great day birthday stars! "
-                               f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
-        await channel_test.send(f"{client.get_user(int(user_id[0])).name} and "
+                               f"<:EeveeHeart:977982162303324190> \n{role}")
+        await channel_test.send(f"For server {server.serverID}:\n"
+                                f"{client.get_user(int(user_id[0])).name} and "
                                 f"{client.get_user(int(user_id[1])).name}'s birthday message is sent.\n{timestamp()}")
     else:
         stat = False
@@ -506,7 +564,7 @@ async def announce(user_id):
             if i != len(user_id) - 2:
                 message += ", "
         message += (f" and <@{user_id[len(user_id) - 1]}>! Happy Birthday to all of them!"
-                    f"<:EeveeHeart:977982162303324190> \n<@&{community}>")
+                    f"<:EeveeHeart:977982162303324190> \n{role}")
         await channel.send(message)
         if stat:
             await channel.send(
@@ -532,20 +590,25 @@ def check_tomorrow(month, day, year):
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Lists out future birthdays.")
 async def upcoming_birthdays(interaction: nextcord.Interaction):
-    if interaction.channel_id not in perm:
+    server = server_info.search_for_server(servers, interaction.guild_id)
+    if interaction.channel_id not in server.allowedChannels:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(content="This is the wrong channel!")
         return
     await interaction.response.defer()
-    temp_coming = birthday.coming_birthdays()
-    for i in temp_coming:
-        if not client.get_guild(int(os.getenv('OUTLET'))).get_member(i["id"]):
-            temp_coming.remove(i)
+    dummy_coming = birthday.coming_birthdays()
+    temp_coming = []
+    for i in dummy_coming:
+        if not (client.get_guild(server.serverID).get_member(i["id"]) is None):
+            temp_coming.append(i)
+
     des = f""
     today = datetime.datetime.now()
     length = 10
     if len(temp_coming) < 10:
         length = len(temp_coming)
+    if length == 0:
+        des += "No birthdays :("
     coming = [temp_coming[i] for i in range(length)]
     for i in coming:
         if today.month == i['month'] and today.day == i['day']:
@@ -593,11 +656,12 @@ class Pages(nextcord.ui.View):
 
 
 @commands.guild_only()
-@client.slash_command(guild_ids=guilds_list, description="My info!")  # Create a slash command
-async def info(ctx):
-    if ctx.channel_id not in perm:
-        await ctx.response.defer(ephemeral=True)
-        await ctx.edit_original_message(content="This is the wrong channel!")
+@client.slash_command(guild_ids=guilds_list, description="My info!")
+async def info(interaction):
+    server = server_info.search_for_server(servers, interaction.guild_id)
+    if interaction.channel_id not in server.allowedChannels:
+        await interaction.response.defer(ephemeral=True)
+        await interaction.edit_original_message(content="This is the wrong channel!")
         return
     title = "Birthday Eevee <:EeveeWave:1062326395935674489>"
     url = "https://github.com/anormalperson8/Birthday"
@@ -606,7 +670,7 @@ async def info(ctx):
     for i in range(len(pages)):
         pages[i].set_thumbnail(image)
         pages[i].set_footer(text=f"Page {i + 1}/3")
-    await ctx.response.send_message(content="", embed=pages[0], view=Pages(pages=pages))
+    await interaction.response.send_message(content="", embed=pages[0], view=Pages(pages=pages))
 
 
 # Easter eggs I guess
