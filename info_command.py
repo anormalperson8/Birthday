@@ -12,7 +12,7 @@ def random_colour():
                nextcord.Colour.purple(),
                nextcord.Colour.dark_purple()]
     random.seed(datetime.datetime.now().timestamp())
-    return colours[random.randint(1, 7)]
+    return colours[random.randint(0, 6)]
 
 
 def create_page(title: str, url: str, page: int):
