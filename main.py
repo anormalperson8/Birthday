@@ -2,14 +2,14 @@
 import nextcord
 import os
 from dotenv import load_dotenv
-from nextcord.ext import commands, tasks
+from nextcord.ext import commands
 import datetime
 import calendar
 import asyncio
-import random
 
 # Self .py files
 import birthday
+import info_command
 
 intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix='.', intents=intents, help_command=None,
@@ -334,7 +334,7 @@ async def secret(interaction: nextcord.Interaction,
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
-            embed=nextcord.Embed(colour=random_colour(), title="This is a secret🤫",
+            embed=nextcord.Embed(colour=info_command.random_colour(), title="This is a secret🤫",
                                  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                                  description="There is totally no link at the title."))
         return
@@ -469,7 +469,7 @@ async def announce(user_id):
     channel_test = client.get_guild(int(os.getenv('TEST_GUILD'))).get_channel(int(os.getenv('TEST_CHANNEL')))
     channel = client.get_guild(int(os.getenv('OUTLET'))).get_channel(int(os.getenv('AN_ID')))
     # DEBUG PURPOSES ONLY
-    # channel = channel_test
+    channel = channel_test
     if len(user_id) == 0:
         await channel_test.send(
             f"No message today.\n{timestamp()}\nThere is at least one birthday today though.")
@@ -529,18 +529,6 @@ def check_tomorrow(month, day, year):
     return False
 
 
-def random_colour():
-    colours = [nextcord.Colour.red(),
-               nextcord.Colour.orange(),
-               nextcord.Colour.yellow(),
-               nextcord.Colour.green(),
-               nextcord.Colour.blue(),
-               nextcord.Colour.purple(),
-               nextcord.Colour.dark_purple()]
-    random.seed(datetime.datetime.now().timestamp())
-    return colours[random.randint(1, 7)]
-
-
 @commands.guild_only()
 @client.slash_command(guild_ids=guilds_list, description="Lists out future birthdays.")
 async def upcoming_birthdays(interaction: nextcord.Interaction):
@@ -570,7 +558,7 @@ async def upcoming_birthdays(interaction: nextcord.Interaction):
     await interaction.edit_original_message(embeds=[
         nextcord.Embed(title="Upcoming Birthdays <:EeveeUwU:965977552067899482>",
                        description=des,
-                       colour=random_colour())])
+                       colour=info_command.random_colour())])
 
 
 class Pages(nextcord.ui.View):
@@ -613,60 +601,12 @@ async def info(ctx):
         return
     title = "Birthday Eevee <:EeveeWave:1062326395935674489>"
     url = "https://github.com/anormalperson8/Birthday"
-    colour = random_colour()
-    page1 = nextcord.Embed(title=title,
-                           description="# Server Global Commands\n"
-                                       "The following commands can be used by all users of Outlet.\n"
-                                       "## Slash Commands\n"
-                                       "**upcoming_birthdays**\nThis command shows future birthdays of the server.\n"
-                                       "(At most 10.)\n"
-                                       "**set_birthday**\nThis command adds your own birthday to the bot.\n"
-                                       "Requires at least your birth month and birth day.\n"
-                                       "**delete_birthday**\nThis command removes your own birthday from the bot.\n"
-                                       ""
-                                       "**get_birthday**\nThis command allows you to get a user's birthday.\n"
-                                       "The bot assumes your own if no user is given.\n"
-                                       "**ping**\nTest command.\n"
-                                       "**info**\nThis command.\n"
-                                       "## Text Commands (Prefix: `.`)\n"
-                                       "**boo**\nOi.",
-                           colour=colour, url=url)
-    page2 = nextcord.Embed(title=title,
-                           description="# Moderator Commands\n"
-                                       "The following commands can only be used by moderators of Outlet.\n"
-                                       "## Slash Commands\n"
-                                       "**set_user_birthday**\nThis command sets a user's birthday to the bot.\n"
-                                       "Same as **set_birthday**, but cannot be used to set your own.\n"
-                                       "**delete_user_birthday**\nThis command deletes a user's birthday.\n"
-                                       "Same as **delete_birthday**, but cannot be used to delete your own.\n"
-                                       "**add_emote**\nThis commands lets "
-                                       "Birthday Eevee add a reaction to a message.\n"
-                                       "(Only accepts default emojis or emojis of Outlet.)\n"
-                                       "Message ID and emotes are required for the command.\n"
-                                       "**edit**\nThis commands edits a message Birthday Eevee sent.\n"
-                                       "Message ID and content are required for the command.\n"
-                                       "## Text Commands (Prefix: `.`)\n"
-                                       "**echo**\nBirthday Eevee echos what you say.\n"
-                                       "You won't get any response if you're not a moderator.",
-                           colour=colour, url=url)
-    page3 = nextcord.Embed(title=title,
-                           description="# Owner Commands\n"
-                                       "Don't try it. They can only be used by the owner.\n"
-                                       "## Slash Commands\n"
-                                       "**test**\nDon't try it.\n"
-                                       "**checkers**\nDon't try it.\n"
-                                       "**status**\nDon't try it.\n"
-                                       "**activity**\nDon't try it.\n"
-                                       "**secret**\nIt *literally* says secret.\n"
-                                       "## Text Commands (Prefix: `.`)\n"
-                                       "**time**\nYou won't get any response if you're not the owner.",
-                           colour=colour, url=url)
-    pages = [page1, page2, page3]
+    pages = [info_command.create_page(title, url, i + 1) for i in range(3)]
     image = "https://cdn.discordapp.com/attachments/1117033415305347073/1133685861318414497/BdayEevee.png"
     for i in range(len(pages)):
         pages[i].set_thumbnail(image)
         pages[i].set_footer(text=f"Page {i + 1}/3")
-    await ctx.response.send_message(content="", embed=page1, view=Pages(pages=pages))
+    await ctx.response.send_message(content="", embed=pages[0], view=Pages(pages=pages))
 
 
 # Easter eggs I guess
