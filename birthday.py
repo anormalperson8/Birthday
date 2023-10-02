@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 path = os.path.dirname(os.path.abspath(__file__))
 data_path = f"{path}/data/"
 load_dotenv(f"{data_path}data.env")
-os.getenv(f"{data_path}data.env")
 
 
 def turn_to_english(number):
@@ -109,13 +108,10 @@ def coming_birthdays():
         elif i["month"] == month and i["day"] >= day:
             ret.append(i)
             count += 1
+    # Append the birthdays before this day
     for j in range(len(people_list) - count):
         ret.append(people_list[j])
         count += 1
     return ret
 
-
-def get_perm():
-    a = [int(os.getenv('TEST_CHANNEL')), int(os.getenv('MODERATOR_ONLY')), int(os.getenv('BOT_STUFF'))]
-    return a
 
