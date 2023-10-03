@@ -711,8 +711,8 @@ async def on_message(message):
     if "i don't like birthdays" in message.content.lower() or "i dont like birthdays" in message.content.lower():
         name = message.author.nick
         if name is None:
-            name = message.author.name
-        await message.channel.send(f"You're mean, {name}. <:EeveeMegaSob:1084890813902884994>")
+            name = message.author.global_name
+        await message.channel.send(f"<:EeveeMegaSob:1084890813902884994> You're mean, {name}.")
     elif "birthday eevee" in message.content.lower():
         await message.add_reaction("<:EeveeLurk:991271779735719976>")
 
