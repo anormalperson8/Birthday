@@ -624,7 +624,7 @@ async def upcoming_birthdays(interaction: nextcord.Interaction):
 
 class Pages(nextcord.ui.View):
 
-    def __init__(self, *, timeout=180, pages=None, page_number=0, ctx=None):
+    def __init__(self, *, timeout=30, pages=None, page_number=0, ctx=None):
         super().__init__(timeout=timeout)
         if pages is None:
             pages = []
@@ -641,29 +641,32 @@ class Pages(nextcord.ui.View):
             self.page_number -= 1
             await self.update_button(self.page_number)
             await interaction.response.edit_message(view=self, content="",
-                                                embed=self.pages[self.page_number])
+                                                    embed=self.pages[self.page_number])
 
     @nextcord.ui.button(label="", style=nextcord.ButtonStyle.gray, emoji="➡️", disabled=False)
     async def next_button(self, button: nextcord.ui.button, interaction: nextcord.Interaction):
-        if self.page_number >= 2:
+        if self.page_number >= len(self.pages) - 1:
             await interaction.response.send_message("You are already at the last page! <:EeveeOwO:965977455791857695>",
                                                     ephemeral=True)
         else:
             self.page_number += 1
             await self.update_button(self.page_number)
-        await interaction.response.edit_message(view=self, content="",
-                                                embed=self.pages[self.page_number])
+            await interaction.response.edit_message(view=self, content="",
+                                                    embed=self.pages[self.page_number])
 
     async def update_button(self, page: int):
-        if page == 0:
-            self.previous_button.disabled = True
-            self.next_button.disabled = False
-        elif page == 2:
-            self.previous_button.disabled = False
-            self.next_button.disabled = True
-        else:
-            self.previous_button.disabled = False
-            self.next_button.disabled = False
+        self.previous_button.disabled = page == 0
+        print(len(self.pages))
+        self.next_button.disabled = page == len(self.pages) - 1
+
+    async def on_timeout(self) -> None:
+        await self.disable_button()
+        og = await self.ctx.original_message()
+        await og.edit(view=self, content="", embed=self.pages[self.page_number])
+
+    async def disable_button(self):
+        self.previous_button.disabled = True
+        self.next_button.disabled = True
 
 
 @commands.guild_only()
@@ -681,7 +684,7 @@ async def info(interaction):
     for i in range(len(pages)):
         pages[i].set_thumbnail(image)
         pages[i].set_footer(text=f"Page {i + 1}/3")
-    await interaction.response.send_message(content="", embed=pages[0], view=Pages(pages=pages))
+    await interaction.response.send_message(content="", embed=pages[0], view=Pages(pages=pages, ctx=interaction))
 
 
 # Easter eggs I guess
