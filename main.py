@@ -656,7 +656,6 @@ class Pages(nextcord.ui.View):
 
     async def update_button(self, page: int):
         self.previous_button.disabled = page == 0
-        print(len(self.pages))
         self.next_button.disabled = page == len(self.pages) - 1
 
     async def on_timeout(self) -> None:
