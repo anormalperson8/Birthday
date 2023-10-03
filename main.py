@@ -632,14 +632,15 @@ class Pages(nextcord.ui.View):
         self.page_number = page_number
         self.ctx = ctx
 
-    @nextcord.ui.button(label="", style=nextcord.ButtonStyle.gray, emoji="⬅️", disabled=False)
+    @nextcord.ui.button(label="", style=nextcord.ButtonStyle.gray, emoji="⬅️", disabled=True)
     async def previous_button(self, button: nextcord.ui.button, interaction):
         if self.page_number <= 0:
             await interaction.response.send_message("You are already at the first page! <:EeveeOwO:965977455791857695>",
                                                     ephemeral=True)
         else:
             self.page_number -= 1
-        await interaction.response.edit_message(view=self, content="",
+            await self.update_button(self.page_number)
+            await interaction.response.edit_message(view=self, content="",
                                                 embed=self.pages[self.page_number])
 
     @nextcord.ui.button(label="", style=nextcord.ButtonStyle.gray, emoji="➡️", disabled=False)
@@ -649,8 +650,20 @@ class Pages(nextcord.ui.View):
                                                     ephemeral=True)
         else:
             self.page_number += 1
+            await self.update_button(self.page_number)
         await interaction.response.edit_message(view=self, content="",
                                                 embed=self.pages[self.page_number])
+
+    async def update_button(self, page: int):
+        if page == 0:
+            self.previous_button.disabled = True
+            self.next_button.disabled = False
+        elif page == 2:
+            self.previous_button.disabled = False
+            self.next_button.disabled = True
+        else:
+            self.previous_button.disabled = False
+            self.next_button.disabled = False
 
 
 @commands.guild_only()
