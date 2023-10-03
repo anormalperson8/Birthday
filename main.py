@@ -520,7 +520,7 @@ async def announce(user_id: list, server: server_info.Server):
     channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
     channel = client.get_guild(server.serverID).get_channel(server.announcementChannel)
     # DEBUG PURPOSES ONLY
-    channel = channel_test
+    # channel = channel_test
     # print(f"for channel {server.serverID} {role}")
     if len(user_id) == 0:
         await channel_test.send(
