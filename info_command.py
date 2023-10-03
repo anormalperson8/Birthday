@@ -51,7 +51,11 @@ def create_page(title: str, url: str, page: int):
                                           "Message ID and content are required for the command.\n"
                                           "## Text Commands (Prefix: `.`)\n"
                                           "**echo**\nBirthday Eevee echos what you say.\n"
-                                          "You won't get any response if you're not a moderator.",
+                                          "If you are replying to a message, the message author is pinged\n"
+                                          "**echo2**\nBirthday Eevee echos what you say.\n"
+                                          "If you are replying to a message, the message author is *not* pinged\n"
+                                          "You won't get any response if you're not a moderator.\n"
+                                          "However your message will be deleted",
                               colour=random_colour(), url=url)
     elif page == 3:
         return nextcord.Embed(title=title,
