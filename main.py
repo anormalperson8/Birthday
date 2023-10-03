@@ -63,19 +63,36 @@ async def time(ctx):
     await ctx.send(f"Time check!\n{timestamp()}")
 
 
-@commands.guild_only()
-@client.command()
-async def echo(ctx, *, arg):
-    await ctx.message.delete()
+async def echo_content(ctx, arg, ping: bool):
     # Owner Privileges
     if ctx.author.id == owner_id:
-        await ctx.send(arg)
+        if ctx.message.reference is not None and ctx.message.reference.resolved is not None:
+            await ctx.message.reference.resolved.reply(arg, mention_author=ping)
+        else:
+            await ctx.send(arg)
         return
     # Check Mod
     for role in ctx.message.author.roles:
         if role.id in server_info.search_for_server(servers, ctx.message.guild_id).moderatorRoles:
-            await ctx.send(arg)
+            if ctx.message.reference.resolved is not None and ctx.message.reference.resolved is not None:
+                await ctx.message.reference.resolved.reply(arg, mention_author=ping)
+            else:
+                await ctx.send(arg)
             return
+
+
+@commands.guild_only()
+@client.command()
+async def echo(ctx, *, arg):
+    await ctx.message.delete()
+    await echo_content(ctx, arg, True)
+
+
+@commands.guild_only()
+@client.command()
+async def echo2(ctx, *, arg):
+    await ctx.message.delete()
+    await echo_content(ctx, arg, False)
 
 
 # Check whether the member is in the server, and whether users are allowed to use commands in the channel
@@ -624,7 +641,7 @@ async def upcoming_birthdays(interaction: nextcord.Interaction):
 
 class Pages(nextcord.ui.View):
 
-    def __init__(self, *, timeout=30, pages=None, page_number=0, ctx=None):
+    def __init__(self, *, timeout=90, pages=None, page_number=0, ctx=None):
         super().__init__(timeout=timeout)
         if pages is None:
             pages = []
