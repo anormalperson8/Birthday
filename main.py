@@ -73,8 +73,8 @@ async def echo_content(ctx, arg, ping: bool):
         return
     # Check Mod
     for role in ctx.message.author.roles:
-        if role.id in server_info.search_for_server(servers, ctx.message.guild_id).moderatorRoles:
-            if ctx.message.reference.resolved is not None and ctx.message.reference.resolved is not None:
+        if role.id in server_info.search_for_server(servers, ctx.message.guild.id).moderatorRoles:
+            if ctx.message.reference is not None and ctx.message.reference.resolved is not None:
                 await ctx.message.reference.resolved.reply(arg, mention_author=ping)
             else:
                 await ctx.send(arg)
