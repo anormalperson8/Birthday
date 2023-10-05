@@ -18,13 +18,14 @@ class Server:
 
 # Returns a list of Server objects
 def get_servers():
-    f = open(data_path + "/server.json", 'r')
+    f = open(data_path + "server.json", 'r')
     data = json.load(f)
     servers = []
     for server in data["server"]:
         servers.append(Server(server["id"], server["announcementChannel"],
                               server["moderatorRoles"], server["allowedChannels"],
                               server["RoleToPing"]))
+    f.close()
     return servers
 
 
@@ -38,5 +39,80 @@ def search_for_server(servers: list, server_id: int):
     return [i for i in servers if i.serverID == server_id][0]
 
 
+def write(servers: list[Server]):
+    w = open(data_path + "server2.json", 'w')
+    objs = []
+    for server in servers:
+        s = {
+            "id": server.serverID,
+            "announcementChannel": server.announcementChannel,
+            "moderatorRoles": server.moderatorRoles,
+            "allowedChannels": server.allowedChannels,
+            "RoleToPing": server.role_to_ping
+            }
+        objs.append(s)
+    obj = {"people": objs}
+    w.write(json.dumps(obj, indent=2))
+    w.close()
+    os.remove(data_path + "server.json")
+    os.rename(data_path + "server2.json", data_path + "server.json")
 
+
+# Edits server info
+def modify(server_id: int, stat: bool, announcement_channel: int = None, moderator_role: int = None,
+           allowed_channel: int = None, role_to_ping: int = None):
+    servers = get_servers()
+    done = False
+    message = ""
+    for server in servers:
+        if server.serverID == server_id:
+            if announcement_channel is not None:
+                if announcement_channel != server.announcementChannel:
+                    server.announcementChannel = announcement_channel
+                    done = True
+                    message = f"Announcement channel is set to channel with id {announcement_channel}."
+                else:
+                    message = f"This is already the announcement channel!."
+                break
+
+            if moderator_role is not None:
+                if stat and moderator_role not in server.moderatorRoles:
+                    server.moderatorRoles.append(moderator_role)
+                    done = True
+                    message = f"Role with id {moderator_role} is added to the list of permitted roles."
+                elif stat:
+                    message = f"Role with id {moderator_role} could not be added to the list of permitted roles."
+                elif not stat and moderator_role in server.moderatorRoles:
+                    server.moderatorRoles.append(moderator_role)
+                    message = f"Role with id {moderator_role} is removed from the list of permitted roles."
+                elif not stat:
+                    message = f"Role with id {moderator_role} could not be removed from the list of permitted roles."
+                break
+
+            if allowed_channel is not None:
+                if stat and allowed_channel not in server.allowedChannels:
+                    server.allowedChannels.append(allowed_channel)
+                    done = True
+                    message = f"Channel with id {allowed_channel} is added to the list of permitted channels."
+                elif stat:
+                    message = f"Channel with id {allowed_channel} could not be added to the list of permitted channels."
+                elif not stat and allowed_channel in server.allowedChannels:
+                    server.allowedChannels.remove(allowed_channel)
+                    done = True
+                    message = f"Channel with id {allowed_channel} is removed from the list of permitted channels."
+                elif not stat:
+                    message = (f"Channel with id {allowed_channel} could not be removed from the list of permitted "
+                               f"channels.")
+
+            if role_to_ping is not None:
+                if role_to_ping != server.role_to_ping:
+                    server.role_to_ping = role_to_ping
+                    done = True
+                    message = f"Role to ping is set to role with id {role_to_ping}."
+                else:
+                    message = f"This is already the role to ping!."
+                break
+
+    write(servers)
+    return done, message
 
