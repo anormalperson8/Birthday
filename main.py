@@ -393,9 +393,11 @@ async def secret(interaction: nextcord.Interaction,
         return
     if number:
         await interaction.edit_original_message(files=[nextcord.File(r"./data/bday.json"),
+                                                       nextcord.File(r"./data/server.json"),
                                                        nextcord.File(r"./data/day.txt")])
     else:
         await interaction.edit_original_message(files=[nextcord.File(r"./data/bday.json"),
+                                                       nextcord.File(r"./data/server.json"),
                                                        nextcord.File(r"./data/day.txt"),
                                                        nextcord.File(r"./data/data.env")])
 
@@ -719,6 +721,69 @@ async def info(interaction):
         pages[i].set_thumbnail(image)
         pages[i].set_footer(text=f"Page {i + 1}/3")
     await interaction.response.send_message(content="", embed=pages[0], view=Pages(pages=pages, ctx=interaction))
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Changes server information. Owner only.")
+async def modify(interaction: nextcord.Interaction,
+                 server_id: str = nextcord.SlashOption(required=True, description="The server to edit."),
+                 action: int = nextcord.SlashOption(required=True,
+                                                    choices={"Add": 1,
+                                                             "Remove": 0},
+                                                    description="Add or remove an attribute."),
+                 thing_to_modify: int = nextcord.SlashOption(required=True,
+                                                             choices={"Announcement Channel": 1,
+                                                                      "Moderator Role": 2, "Allowed Channel": 3,
+                                                                      "Role to Ping": 4},
+                                                             description="The attribute you want to edit."),
+                 change: int = nextcord.SlashOption(required=False,
+                                                    description="The ID you want to add/remove. "
+                                                                "Write any number when removing ann/role",
+                                                    default=None)):
+    await interaction.response.defer(ephemeral=True)
+    action = bool(action)
+    try:
+        server_id = int(server_id)
+    except ValueError:
+        await interaction.edit_original_message(content="Invalid server ID")
+        return
+    if interaction.user.id != owner_id:
+        await interaction.edit_original_message(
+            content="Did you not read the description? This is for the owner not you <:sunnyBleh:1134343350133202975>")
+        return
+
+    stat = False
+    message = ""
+    match thing_to_modify:
+        case 1:
+            if action and change is None:
+                await interaction.edit_original_message(content=f"Problem: You forgot to include the ID.")
+                return
+            if change is None:
+                change = 1
+            stat, message = server_info.modify(server_id, action, announcement_channel=change)
+        case 2:
+            if change is None:
+                await interaction.edit_original_message(content=f"Problem: You forgot to include the ID.")
+                return
+            stat, message = server_info.modify(server_id, action, moderator_role=change)
+        case 3:
+            if change is None:
+                await interaction.edit_original_message(content=f"Problem: You forgot to include the ID.")
+                return
+            stat, message = server_info.modify(server_id, action, allowed_channel=change)
+        case 4:
+            if action and change is None:
+                await interaction.edit_original_message(content=f"Problem: You forgot to include the ID.")
+                return
+            if change is None:
+                change = 1
+            stat, message = server_info.modify(server_id, action, role_to_ping=change)
+
+    if stat:
+        await interaction.edit_original_message(content=f"Your modification is done!\n{message}")
+        return
+    await interaction.edit_original_message(content=f"Your modification was not completed.\n{message}")
 
 
 # Easter eggs I guess

@@ -1,6 +1,5 @@
 import json
 import os
-from dotenv import load_dotenv
 
 path = os.path.dirname(os.path.abspath(__file__))
 data_path = f"{path}/data/"
@@ -51,7 +50,7 @@ def write(servers: list[Server]):
             "RoleToPing": server.role_to_ping
             }
         objs.append(s)
-    obj = {"people": objs}
+    obj = {"server": objs}
     w.write(json.dumps(obj, indent=2))
     w.close()
     os.remove(data_path + "server.json")
@@ -63,16 +62,21 @@ def modify(server_id: int, stat: bool, announcement_channel: int = None, moderat
            allowed_channel: int = None, role_to_ping: int = None):
     servers = get_servers()
     done = False
-    message = ""
+    message = "Problem: Server was not found."
     for server in servers:
         if server.serverID == server_id:
             if announcement_channel is not None:
-                if announcement_channel != server.announcementChannel:
-                    server.announcementChannel = announcement_channel
-                    done = True
-                    message = f"Announcement channel is set to channel with id {announcement_channel}."
+                if stat:
+                    if announcement_channel != server.announcementChannel:
+                        server.announcementChannel = announcement_channel
+                        done = True
+                        message = f"Announcement channel is set to channel with id {announcement_channel}."
+                    else:
+                        message = f"Problem: This is already the announcement channel!"
                 else:
-                    message = f"This is already the announcement channel!."
+                    server.announcementChannel = 1
+                    done = True
+                    message = f"Announcement channel is removed."
                 break
 
             if moderator_role is not None:
@@ -81,12 +85,15 @@ def modify(server_id: int, stat: bool, announcement_channel: int = None, moderat
                     done = True
                     message = f"Role with id {moderator_role} is added to the list of permitted roles."
                 elif stat:
-                    message = f"Role with id {moderator_role} could not be added to the list of permitted roles."
+                    message = (f"Problem: Role with id {moderator_role} could not be added to the list of "
+                               f"permitted roles.")
                 elif not stat and moderator_role in server.moderatorRoles:
-                    server.moderatorRoles.append(moderator_role)
+                    server.moderatorRoles.remove(moderator_role)
+                    done = True
                     message = f"Role with id {moderator_role} is removed from the list of permitted roles."
                 elif not stat:
-                    message = f"Role with id {moderator_role} could not be removed from the list of permitted roles."
+                    message = (f"Problem: Role with id {moderator_role} could not be removed from the list of "
+                               f"permitted roles.")
                 break
 
             if allowed_channel is not None:
@@ -95,22 +102,29 @@ def modify(server_id: int, stat: bool, announcement_channel: int = None, moderat
                     done = True
                     message = f"Channel with id {allowed_channel} is added to the list of permitted channels."
                 elif stat:
-                    message = f"Channel with id {allowed_channel} could not be added to the list of permitted channels."
+                    message = (f"Problem: Channel with id {allowed_channel} could not be added to the list of "
+                               f"permitted channels.")
                 elif not stat and allowed_channel in server.allowedChannels:
                     server.allowedChannels.remove(allowed_channel)
                     done = True
                     message = f"Channel with id {allowed_channel} is removed from the list of permitted channels."
                 elif not stat:
-                    message = (f"Channel with id {allowed_channel} could not be removed from the list of permitted "
-                               f"channels.")
+                    message = (f"Problem: Channel with id {allowed_channel} could not be removed from the list of "
+                               f"permitted channels.")
+                break
 
             if role_to_ping is not None:
-                if role_to_ping != server.role_to_ping:
-                    server.role_to_ping = role_to_ping
-                    done = True
-                    message = f"Role to ping is set to role with id {role_to_ping}."
+                if stat:
+                    if role_to_ping != server.role_to_ping:
+                        server.role_to_ping = role_to_ping
+                        done = True
+                        message = f"Role to ping is set to role with id {role_to_ping}."
+                    else:
+                        message = f"Problem: This is already the role to ping!."
                 else:
-                    message = f"This is already the role to ping!."
+                    server.role_to_ping = 1
+                    done = True
+                    message = f"Role to ping is removed."
                 break
 
     write(servers)
