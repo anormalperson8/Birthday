@@ -14,7 +14,7 @@ def turn_to_english(number):
 
 
 def get_date(user_id):
-    f = open(data_path + "/bday.json", 'r')
+    f = open(data_path + "bday.json", 'r')
     data = json.load(f)
     for people in data["people"]:
         if people["id"] == user_id:
@@ -53,7 +53,7 @@ def set_date(user_id, year, month, day):
     obj = {"people": data_obj}
     if not stat:
         obj["people"].append({"id": user_id, "year": year, "month": month, "day": day})
-    fw = open(data_path + "/dummy.json", 'w')
+    fw = open(data_path + "dummy.json", 'w')
     fw.write(json.dumps(obj, indent=2))
     fw.close()
     os.remove(data_path + "bday.json")
