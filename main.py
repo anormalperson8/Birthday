@@ -716,7 +716,7 @@ async def info(interaction):
     title = "Birthday Eevee <:EeveeWave:1062326395935674489>"
     url = "https://github.com/anormalperson8/Birthday"
     pages = [info_command.create_page(title, url, i + 1) for i in range(3)]
-    image = "https://cdn.discordapp.com/attachments/1117033415305347073/1133685861318414497/BdayEevee.png"
+    image = "https://github.com/anormalperson8/Birthday/blob/master/data/BdayEevee.png?raw=true"
     for i in range(len(pages)):
         pages[i].set_thumbnail(image)
         pages[i].set_footer(text=f"Page {i + 1}/3")
