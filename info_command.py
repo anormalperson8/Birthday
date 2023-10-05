@@ -71,3 +71,9 @@ def create_page(title: str, url: str, page: int):
                                           "## Text Commands (Prefix: `.`)\n"
                                           "**time**\nYou won't get any response if you're not the owner.",
                               colour=random_colour(), url=url)
+    elif page == 4:
+        return nextcord.Embed(title=title,
+                              description="# Unused page\n"
+                                          "You should not be seeing this page.\n"
+                                          "If you are seeing this, contact the owner.\n",
+                              colour=random_colour(), url=url)
