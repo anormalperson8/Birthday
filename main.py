@@ -489,12 +489,15 @@ async def ann():
         now = datetime.datetime.now()
         if schedule_time <= now:
             day = now.weekday()
+            # Read day.txt
             if os.path.isfile(data_path + "/day.txt"):
                 weekday_file = open(data_path + "/day.txt", "r")
                 day_in_file = weekday_file.read()
                 weekday_file.close()
             else:
-                day_in_file = (day + 6) % 7  # Previous day
+                # Previous day
+                day_in_file = (day + 6) % 7
+            # Announce if the day in txt does not match
             if int(day_in_file) != day:
                 weekday_file = open(data_path + "/day.txt", "w")
                 weekday_file.write(str(day))
@@ -519,7 +522,7 @@ async def bday_announcement():
 
 
 async def announce(user_id: list, server: server_info.Server):
-    # No announcement in that channel
+    # No announcement channel
     if server.announcementChannel == 1:
         return
 
@@ -528,7 +531,9 @@ async def announce(user_id: list, server: server_info.Server):
         if client.get_guild(server.serverID).get_member(i) is None:
             user_id.remove(i)
 
+    # Create the role string
     role = f"<@&{server.role_to_ping}>"
+    # No role to ping
     if server.role_to_ping == 1:
         role = f":D"
 
@@ -544,16 +549,21 @@ async def announce(user_id: list, server: server_info.Server):
             f"For server {server.serverID}:\n"
             f"No message today.\n{timestamp()}\nThere is at least one birthday today though.")
         return
+    # 1 user
     elif len(user_id) == 1:
+        # The bot itself
         if user_id[0] == client.user.id:
             await channel.send(f"It's my birthday today hehe <:EeveeLurk:991271779735719976>")
         else:
             await channel.send(f"It's <@{user_id[0]}>'s birthday, everyone wish them a happy birthday! "
                                f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n"
                                f"{role}")
+        # Test server
         await channel_test.send(f"For server {server.serverID}:\n"
                                 f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.\n{timestamp()}")
+    # 2 users
     elif len(user_id) == 2:
+        # If one of them is the bot itself
         if client.user.id in user_id:
             a = 1
             if user_id[0] == client.user.id:
@@ -565,6 +575,7 @@ async def announce(user_id: list, server: server_info.Server):
             await channel.send(f"It's the birthday of <@{user_id[0]}> and <@{user_id[1]}>, "
                                f"everyone wish them a happy birthday!\nHave a great day birthday stars! "
                                f"<:EeveeHeart:977982162303324190> \n{role}")
+        # Test server
         await channel_test.send(f"For server {server.serverID}:\n"
                                 f"{client.get_user(int(user_id[0])).name} and "
                                 f"{client.get_user(int(user_id[1])).name}'s birthday message is sent.\n{timestamp()}")
@@ -572,10 +583,12 @@ async def announce(user_id: list, server: server_info.Server):
         stat = False
         message = f"It's the birthday of "
         for i in range(len(user_id) - 1):
+            # If the bot is in the list, it will not be added to the bday message
             if user_id[i] == client.user.id:
                 stat = True
                 continue
             message += f"<@{user_id[i]}>"
+            # Second last uses "and"
             if i != len(user_id) - 2:
                 message += ", "
         message += (f" and <@{user_id[len(user_id) - 1]}>! Happy Birthday to all of them!"
@@ -584,6 +597,7 @@ async def announce(user_id: list, server: server_info.Server):
         if stat:
             await channel.send(
                 f"I guess I should also mention it's my birthday today as well <:EeveeLurk:991271779735719976>")
+        # Test server
         debug = "bday message of "
         for j in range(len(user_id)):
             if j != 0:
@@ -614,6 +628,10 @@ async def upcoming_birthdays(interaction: nextcord.Interaction):
     dummy_coming = birthday.coming_birthdays()
     temp_coming = []
     for i in dummy_coming:
+        # Remove the bot itself
+        if i["id"] == client.user.id:
+            continue
+        # Not in server
         if not (client.get_guild(server.serverID).get_member(i["id"]) is None):
             temp_coming.append(i)
 
