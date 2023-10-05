@@ -25,6 +25,10 @@ This bot remembers birthdays of users in a Discord server, and announces them on
 - The `echo` text command has now been split into `echo` and `echo2`.
 - The only difference is if the message is replying another one, `echo` pings the author while `echo2` does not.
 
+#### Version 2.0.2
+- Owner can now modify server information.
+- The code is now slightly more readable. (It is still far from actually readable)
+
 
 ### [main.py](/main.py)
 The file that stores all the commands and interactions.
