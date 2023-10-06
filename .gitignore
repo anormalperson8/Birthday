@@ -79,4 +79,3 @@ fabric.properties
 
 # data files
 data/*.*
-!data/BdayEevee.png
