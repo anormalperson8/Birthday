@@ -482,7 +482,7 @@ async def status(interaction: nextcord.Interaction,
 
 
 async def ann():
-    schedule_time = datetime.datetime.now().replace(hour=0, minute=30, second=0, microsecond=0)
+    schedule_time = datetime.datetime.now().replace(hour=2, minute=0, second=0, microsecond=0)
     # DEBUG PRINTING COMMANDS
     # print(schedule_time)
     # print(timestamp())
