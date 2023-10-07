@@ -736,20 +736,26 @@ async def modify(interaction: nextcord.Interaction,
                                                                       "Moderator Role": 2, "Allowed Channel": 3,
                                                                       "Role to Ping": 4},
                                                              description="The attribute you want to edit."),
-                 change: int = nextcord.SlashOption(required=False,
+                 change: str = nextcord.SlashOption(required=False,
                                                     description="The ID you want to add/remove. "
                                                                 "Write any number when removing ann/role",
                                                     default=None)):
     await interaction.response.defer(ephemeral=True)
+    if interaction.user.id != owner_id:
+        await interaction.edit_original_message(
+            content="Did you not read the description? This is for the owner not you <:sunnyBleh:1134343350133202975>")
+        return
+    # Changing data types
     action = bool(action)
     try:
         server_id = int(server_id)
     except ValueError:
         await interaction.edit_original_message(content="Invalid server ID")
         return
-    if interaction.user.id != owner_id:
-        await interaction.edit_original_message(
-            content="Did you not read the description? This is for the owner not you <:sunnyBleh:1134343350133202975>")
+    try:
+        change = int(change)
+    except ValueError:
+        await interaction.edit_original_message(content="Invalid channel/role ID")
         return
 
     stat = False
