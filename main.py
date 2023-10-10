@@ -787,6 +787,8 @@ async def modify(interaction: nextcord.Interaction,
             stat, message = server_info.modify(server_id, action, role_to_ping=change)
 
     if stat:
+        global servers
+        servers = server_info.get_servers()
         await interaction.edit_original_message(content=f"Your modification is done!\n{message}")
         return
     await interaction.edit_original_message(content=f"Your modification was not completed.\n{message}")
