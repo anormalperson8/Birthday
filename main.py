@@ -197,12 +197,16 @@ async def get_birthday(interaction: nextcord.Interaction,
         await interaction.edit_original_message(content="Member is not in server.")
         return
 
+    name = user.global_name
+    if name is None:
+        name = user.display_name
+
     await interaction.response.defer()
     date, allow = birthday.get_date(user.id)
 
     if date is None:
         await interaction.edit_original_message(
-            content=f"{user.global_name}'s birthday does not exist in the system. <:EeveeCry:965985819057848320>")
+            content=f"{name}'s birthday does not exist in the system. <:EeveeCry:965985819057848320>")
         return
 
     # Generate the date string if date exists
@@ -235,13 +239,13 @@ async def get_birthday(interaction: nextcord.Interaction,
 
     if next_bday == 0:
         await interaction.edit_original_message(
-            content=f"It is {user.global_name}'s birthday today, {phrase}")
+            content=f"It is {name}'s birthday today, {phrase}")
     elif next_bday == 1:
         await interaction.edit_original_message(
-            content=f"Tomorrow is {user.global_name}'s next birthday, {phrase}")
+            content=f"Tomorrow is {name}'s next birthday, {phrase}")
     else:
         await interaction.edit_original_message(
-            content=f"{user.global_name}'s next birthday is in **{next_bday}** days, {phrase}")
+            content=f"{name}'s next birthday is in **{next_bday}** days, {phrase}")
 
 
 def valid_date(year, month, day):
