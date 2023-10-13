@@ -221,11 +221,12 @@ async def get_birthday(interaction: nextcord.Interaction,
             postfix = 'rd'
 
     # If the user included the year
-    year_phrase = ""
-    if year != 1:
-        year_phrase = ", " + str(year)
+    # year_phrase = ""
+    # if year != 1:
+        # year_phrase = ", " + str(year)
 
-    phrase = f"on **{day}{postfix} {month}{year_phrase}**."
+    # phrase = f"on **{day}{postfix} {month}{year_phrase}**."
+    phrase = f"on **{day}{postfix} {month}**."
 
     # Calculate date difference
     now = datetime.datetime(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
