@@ -198,7 +198,7 @@ async def get_birthday(interaction: nextcord.Interaction,
         return
 
     await interaction.response.defer()
-    date = birthday.get_date(user.id)
+    date, allow = birthday.get_date(user.id)
 
     if date is None:
         await interaction.edit_original_message(
@@ -221,12 +221,11 @@ async def get_birthday(interaction: nextcord.Interaction,
             postfix = 'rd'
 
     # If the user included the year
-    # year_phrase = ""
-    # if year != 1:
-        # year_phrase = ", " + str(year)
+    year_phrase = ""
+    if year != 1 and allow:
+        year_phrase = ", " + str(year)
 
-    # phrase = f"on **{day}{postfix} {month}{year_phrase}**."
-    phrase = f"on **{day}{postfix} {month}**."
+    phrase = f"on **{day}{postfix} {month}{year_phrase}**."
 
     # Calculate date difference
     now = datetime.datetime(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
@@ -275,8 +274,12 @@ def valid_date(year, month, day):
 async def set_birthday(interaction: nextcord.Interaction,
                        day: int = nextcord.SlashOption(required=True, description="The day."),
                        month: int = nextcord.SlashOption(required=True, description="The month."),
-                       year: int = nextcord.SlashOption(required=False, description="The year.", default=1)):
-    await set_user_birthday(interaction, None, day, month, year)
+                       year: int = nextcord.SlashOption(required=False, description="The year.", default=1),
+                       disclose: bool = nextcord.SlashOption(required=False,
+                                                             description="Whether your birth year would be disclosed "
+                                                                         "in get_birthday().",
+                                                             default=False)):
+    await set_user_birthday(interaction, None, day, month, year, disclose)
 
 
 @commands.guild_only()
@@ -287,7 +290,11 @@ async def set_user_birthday(interaction: nextcord.Interaction,
                                                                                    "you want to set."),
                             day: int = nextcord.SlashOption(required=True, description="The day."),
                             month: int = nextcord.SlashOption(required=True, description="The month."),
-                            year: int = nextcord.SlashOption(required=False, description="The year.", default=1)):
+                            year: int = nextcord.SlashOption(required=False, description="The year.", default=1),
+                            disclose: bool = nextcord.SlashOption(required=False,
+                                                                  description="Whether your birth year would be disclosed "
+                                                                              "in get_birthday().",
+                                                                  default=False)):
     # Check if it is a mod call or not
     if user is not None and not check_mod(interaction):
         await interaction.response.defer(ephemeral=True)
@@ -314,7 +321,7 @@ async def set_user_birthday(interaction: nextcord.Interaction,
         await interaction.edit_original_message(content="Invalid Birthday! <:EeveeOwO:965977455791857695>")
         return
 
-    birthday.set_date(user.id, year, month, day)
+    birthday.set_date(user.id, year, month, day, disclose)
     await interaction.edit_original_message(content="Birthday updated! <:EeveeCool:1007625997719449642>")
 
 
