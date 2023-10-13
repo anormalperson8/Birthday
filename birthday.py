@@ -114,4 +114,25 @@ def coming_birthdays():
         count += 1
     return ret
 
+def temp():
+    fr = open(data_path + "bday.json", 'r')
+    data = json.load(fr)
+    data_obj = []
+    obj = {"people": data_obj}
+    for people in data["people"]:
+        user_id = people["id"]
+        year = people["year"]
+        month = people["month"]
+        day = people["day"]
+        obj["people"].append({"id": user_id, "year": year, "month": month, "day": day, "allow": False})
+    fr.close()
+
+    fw = open(data_path + "dummy.json", 'w')
+    fw.write(json.dumps(obj, indent=2))
+    fw.close()
+    os.remove(data_path + "bday.json")
+    os.rename(data_path + "dummy.json", data_path + "bday.json")
+
+
+temp()
 
