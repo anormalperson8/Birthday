@@ -202,7 +202,7 @@ async def get_birthday(interaction: nextcord.Interaction,
 
     if date is None:
         await interaction.edit_original_message(
-            content=f"{user.display_name}'s birthday does not exist in the system. <:EeveeCry:965985819057848320>")
+            content=f"{user.global_name}'s birthday does not exist in the system. <:EeveeCry:965985819057848320>")
         return
 
     # Generate the date string if date exists
