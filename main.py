@@ -237,13 +237,13 @@ async def get_birthday(interaction: nextcord.Interaction,
 
     if next_bday == 0:
         await interaction.edit_original_message(
-            content=f"It is {user.display_name}'s birthday today, {phrase}")
+            content=f"It is {user.global_name}'s birthday today, {phrase}")
     elif next_bday == 1:
         await interaction.edit_original_message(
-            content=f"Tomorrow is {user.display_name}'s next birthday, {phrase}")
+            content=f"Tomorrow is {user.global_name}'s next birthday, {phrase}")
     else:
         await interaction.edit_original_message(
-            content=f"{user.display_name}'s next birthday is in **{next_bday}** days, {phrase}")
+            content=f"{user.global_name}'s next birthday is in **{next_bday}** days, {phrase}")
 
 
 def valid_date(year, month, day):
