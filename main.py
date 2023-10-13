@@ -809,4 +809,12 @@ async def on_message(message):
         await message.add_reaction("<:EeveeLurk:991271779735719976>")
 
 
+@commands.guild_only()
+@client.command()
+async def temp(ctx, *, arg):
+    if ctx.author.id != owner_id:
+        return
+    birthday.temp()
+
+
 client.run(token)
