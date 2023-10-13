@@ -18,8 +18,8 @@ def get_date(user_id):
     data = json.load(f)
     for people in data["people"]:
         if people["id"] == user_id:
-            return datetime.datetime(people["year"], people["month"], people["day"])
-    return None
+            return datetime.datetime(people["year"], people["month"], people["day"]), people["allow"]
+    return None, False
 
 
 def get_user():
@@ -37,7 +37,7 @@ def get_user():
     return None
 
 
-def set_date(user_id, year, month, day):
+def set_date(user_id, year, month, day, allow):
     fr = open(data_path + "bday.json", 'r')
     data = json.load(fr)
     data_obj = []
@@ -47,12 +47,13 @@ def set_date(user_id, year, month, day):
             people["year"] = year
             people["month"] = month
             people["day"] = day
+            people["allow"] = allow
             stat = True
         data_obj.append(people)
     fr.close()
     obj = {"people": data_obj}
     if not stat:
-        obj["people"].append({"id": user_id, "year": year, "month": month, "day": day})
+        obj["people"].append({"id": user_id, "year": year, "month": month, "day": day, "allow": allow})
     fw = open(data_path + "dummy.json", 'w')
     fw.write(json.dumps(obj, indent=2))
     fw.close()
