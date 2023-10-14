@@ -42,7 +42,7 @@ The file that stores all the commands and interactions.
 The file that stores all the code that is used to read/write data.
 
 ### [info_command.py](/info_command.py)
-The file that stores contents of the **/info** command, as there are a lot of text in that.
+The file that stores contents of the `info` slash command, as there are a lot of text in that.
 
 ### [server_info.py](/server_info.py)
 The file that stores all the code that is used to retrieve server data, such as its ID of the announcement channel.
