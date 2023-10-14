@@ -197,9 +197,10 @@ async def get_birthday(interaction: nextcord.Interaction,
         await interaction.edit_original_message(content="Member is not in server.")
         return
 
-    name = user.global_name
+    name = user.nick
     if name is None:
-        name = user.display_name
+        name = user.global_name
+
 
     await interaction.response.defer()
     date, allow = birthday.get_date(user.id)
