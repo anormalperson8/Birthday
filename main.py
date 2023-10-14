@@ -200,7 +200,8 @@ async def get_birthday(interaction: nextcord.Interaction,
     name = user.nick
     if name is None:
         name = user.global_name
-
+        if name is None:
+            name = user.display_name
 
     await interaction.response.defer()
     date, allow = birthday.get_date(user.id)
