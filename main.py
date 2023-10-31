@@ -24,8 +24,6 @@ load_dotenv(f"{data_path}/data.env")
 token = os.getenv('TOKEN')
 owner_id = int(os.getenv('ID'))
 guilds_list = []
-for guild in client.guilds:
-    guilds_list.append(int(guild.id))
 servers = server_info.get_servers()
 
 
@@ -33,6 +31,9 @@ servers = server_info.get_servers()
 async def on_ready():
     await client.wait_until_ready()
     client.loop.create_task(ann())
+    global guilds_list
+    for guild in client.guilds:
+        guilds_list.append(int(guild.id))
     print('We have logged in as {0.user}'.format(client))
     test_server = server_info.get_servers()[0]
     channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
