@@ -37,7 +37,7 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     test_server = server_info.get_servers()[0]
     channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
-    await channel_test.send("Bot is on.")
+    await channel_test.send(f"Bot is on.\nGuilds I am in (ID): {guilds_list}")
 
 
 # Response-testing command
