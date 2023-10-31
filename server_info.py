@@ -38,6 +38,11 @@ def search_for_server(servers: list, server_id: int):
     return [i for i in servers if i.serverID == server_id][0]
 
 
+# Returns true if the server exists. False otherwise.
+def server_exists(servers: list, server_id: int):
+    return len([i for i in servers if i.serverID == server_id]) == 1
+
+
 def write(servers: list[Server]):
     w = open(data_path + "server2.json", 'w')
     objs = []
