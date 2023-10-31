@@ -768,11 +768,12 @@ async def modify(interaction: nextcord.Interaction,
     except ValueError:
         await interaction.edit_original_message(content="Invalid server ID.")
         return
-    try:
-        change = int(change)
-    except ValueError:
-        await interaction.edit_original_message(content="Invalid channel/role ID.")
-        return
+    if change != "":
+        try:
+            change = int(change)
+        except ValueError:
+            await interaction.edit_original_message(content="Invalid channel/role ID.")
+            return
 
     stat = False
     message = ""
