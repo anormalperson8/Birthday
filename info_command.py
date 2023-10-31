@@ -67,6 +67,7 @@ def create_page(title: str, url: str, page: int):
                                           "**status**\nDon't try it.\n"
                                           "**activity**\nDon't try it.\n"
                                           "**modify**\nDon't try it.\n"
+                                          "**add_server**\nDon't try it.\n"
                                           "**secret**\nIt *literally* says secret.\n"
                                           "## Text Commands (Prefix: `.`)\n"
                                           "**time**\nYou won't get any response if you're not the owner.",
