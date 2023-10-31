@@ -34,6 +34,9 @@ This bot remembers birthdays of users in a Discord server, and announces them on
 attribute in their birthday entries.
 - Changed all past users' entries' `allow` attribute to `false` (Except for itself).
 
+#### Version 2.0.4
+- Added the ability for the owner to add/delete server from the server data file.
+
 
 ### [main.py](/main.py)
 The file that stores all the commands and interactions.
@@ -49,4 +52,14 @@ The file that stores all the code that is used to retrieve server data, such as 
 
 ### [Dependencies](/requirements.txt)
 This file holds packages one needs to additionally install to host this bot.
+
+## FAQ
+#### Can I host this bot myself?
+- Yes, but please contact me for permission if you do.
+
+#### How do I host this bot myself?
+- To be added.
+
+#### Is the code really spaghetti?
+- Yes, absolutely!
 
