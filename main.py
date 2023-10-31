@@ -815,7 +815,7 @@ async def modify(interaction: nextcord.Interaction,
 
 
 @commands.guild_only()
-@client.slash_command(guild_ids=guilds_list, description="Add a server to server file. Owner only.")
+@client.slash_command(guild_ids=guilds_list, description="Add a server to the server file. Owner only.")
 async def add_server(interaction: nextcord.Interaction,
                      server_id: str = nextcord.SlashOption(required=True,
                                                            description="Server ID of the server you want to add.")
@@ -839,6 +839,31 @@ async def add_server(interaction: nextcord.Interaction,
     servers.append(server_info.Server(server_id, 1, [], [], 1))
     server_info.write(servers)
     await interaction.edit_original_message(content=f"Server added.")
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Deletes a server from the server file. Owner only.")
+async def delete_server(interaction: nextcord.Interaction,
+                        server_id: str = nextcord.SlashOption(required=True,
+                                                              description="Server ID of the server you want to add.")
+                        ):
+    await interaction.response.defer(ephemeral=True)
+    if interaction.user.id != owner_id:
+        await interaction.edit_original_message(
+            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+        return
+    server_id = int(server_id)
+    global servers, guilds_list
+    if server_id not in guilds_list:
+        await interaction.edit_original_message(content=f"Not a valid ID for a server I'm in.")
+        return
+    if not server_info.server_exists(servers, server_id):
+        await interaction.edit_original_message(content=f"Server does not exist in the system.")
+        return
+
+    servers.remove(server_info.search_for_server(servers, server_id))
+    server_info.write(servers)
+    await interaction.edit_original_message(content=f"Server deleted.")
 
 
 # Easter eggs I guess
