@@ -124,7 +124,7 @@ async def test(interaction: nextcord.Interaction,
     if interaction.user.id != owner_id:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(
-            content="This is for the owner not you <:sunnyyBleh:1134343350133202975>")
+            content="This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
     # Check channel
     if interaction.channel_id not in server_info.search_for_server(servers, interaction.guild_id).allowedChannels:
@@ -149,7 +149,7 @@ async def checkers(interaction: nextcord.Interaction):
     if interaction.user.id != owner_id:
         await interaction.response.defer(ephemeral=True)
         await interaction.edit_original_message(
-            content="This is for the owner not you <:sunnyBleh:1134343350133202975>")
+            content="This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
 
     bday_list = birthday.get_user()
@@ -458,7 +458,7 @@ async def activity(interaction: nextcord.Interaction,
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
-            content="Did you not read the description? This is for the owner not you <:sunnyBleh:1134343350133202975>")
+            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
     verb_dict = {"Playing": nextcord.Game(name=activity_name),
                  "Streaming": nextcord.Streaming(name=activity_name, url=url),
@@ -486,7 +486,7 @@ async def status(interaction: nextcord.Interaction,
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
-            content="Did you not read the description? This is for the owner not you <:sunnyBleh:1134343350133202975>")
+            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
     status_dict = {"Online": nextcord.Status.online, "Idle": nextcord.Status.idle,
                    "DND": nextcord.Status.dnd, "Offline": nextcord.Status.offline}
@@ -756,7 +756,7 @@ async def modify(interaction: nextcord.Interaction,
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
-            content="Did you not read the description? This is for the owner not you <:sunnyBleh:1134343350133202975>")
+            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
         return
     # Changing data types
     action = bool(action)
@@ -805,6 +805,33 @@ async def modify(interaction: nextcord.Interaction,
         await interaction.edit_original_message(content=f"Your modification is done!\n{message}")
         return
     await interaction.edit_original_message(content=f"Your modification was not completed.\n{message}")
+
+
+@commands.guild_only()
+@client.slash_command(guild_ids=guilds_list, description="Add a server to server file. Owner only.")
+async def add_server(interaction: nextcord.Interaction,
+                     server_id: str = nextcord.SlashOption(required=True,
+                                                           description="Server ID of the server you want to add.")
+                     ):
+    await interaction.response.defer(ephemeral=True)
+    if interaction.user.id != owner_id:
+        await interaction.edit_original_message(
+            content="Did you not read the description? This is for the owner not you <:sunnyyBleh:1055108393372749824>")
+        return
+    server_id = int(server_id)
+    global servers, guilds_list
+    if server_id not in guilds_list:
+        await interaction.edit_original_message(content=f"Not a valid ID for a server I'm in.")
+        return
+    if server_info.server_exists(servers, server_id):
+        await interaction.edit_original_message(content=f"Server already exists in the system. "
+                                                        f"You can modify server attributes instead. "
+                                                        f"<:sunnyy:1055107759231729735>")
+        return
+
+    servers.append(server_info.Server(server_id, 1, [], [], 1))
+    server_info.write(servers)
+    await interaction.edit_original_message(content=f"Server added.")
 
 
 # Easter eggs I guess
