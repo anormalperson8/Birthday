@@ -37,7 +37,7 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     test_server = server_info.get_servers()[0]
     channel_test = client.get_guild(test_server.serverID).get_channel(test_server.allowedChannels[0])
-    await channel_test.send(f"Bot is on.\nGuilds I am in (ID): {guilds_list}")
+    await channel_test.send(f"Bot is on.")
 
 
 # Response-testing command
@@ -405,12 +405,15 @@ async def secret(interaction: nextcord.Interaction,
                                  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                                  description="There is totally not a link at the title."))
         return
+    global guilds_list
     if number:
-        await interaction.edit_original_message(files=[nextcord.File(r"./data/bday.json"),
+        await interaction.edit_original_message(content=f"Guilds I am in (ID): {guilds_list}",
+                                                files=[nextcord.File(r"./data/bday.json"),
                                                        nextcord.File(r"./data/server.json"),
                                                        nextcord.File(r"./data/day.txt")])
     else:
-        await interaction.edit_original_message(files=[nextcord.File(r"./data/bday.json"),
+        await interaction.edit_original_message(content=f"Guilds I am in (ID): {guilds_list}",
+                                                files=[nextcord.File(r"./data/bday.json"),
                                                        nextcord.File(r"./data/server.json"),
                                                        nextcord.File(r"./data/day.txt"),
                                                        nextcord.File(r"./data/data.env")])
