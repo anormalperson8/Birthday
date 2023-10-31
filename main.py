@@ -747,8 +747,10 @@ async def modify(interaction: nextcord.Interaction,
                                                     description="Add or remove an attribute."),
                  thing_to_modify: int = nextcord.SlashOption(required=True,
                                                              choices={"Announcement Channel": 1,
-                                                                      "Moderator Role": 2, "Allowed Channel": 3,
-                                                                      "Role to Ping": 4},
+                                                                      "Moderator Role": 2,
+                                                                      "Allowed Channel": 3,
+                                                                      "Role to Ping": 4
+                                                                      },
                                                              description="The attribute you want to edit."),
                  change: str = nextcord.SlashOption(required=False,
                                                     description="The ID you want to add/remove. "
