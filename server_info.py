@@ -75,7 +75,7 @@ def modify(server_id: int, stat: bool, announcement_channel: int = None, moderat
                     if announcement_channel != server.announcementChannel:
                         server.announcementChannel = announcement_channel
                         done = True
-                        message = f"Announcement channel is set to channel with id {announcement_channel}."
+                        message = f"Announcement channel is set to channel with ID {announcement_channel}."
                     else:
                         message = f"Problem: This is already the announcement channel!"
                 else:
@@ -88,16 +88,16 @@ def modify(server_id: int, stat: bool, announcement_channel: int = None, moderat
                 if stat and moderator_role not in server.moderatorRoles:
                     server.moderatorRoles.append(moderator_role)
                     done = True
-                    message = f"Role with id {moderator_role} is added to the list of permitted roles."
+                    message = f"Role with ID {moderator_role} is added to the list of permitted roles."
                 elif stat:
-                    message = (f"Problem: Role with id {moderator_role} could not be added to the list of "
+                    message = (f"Problem: Role with ID {moderator_role} could not be added to the list of "
                                f"permitted roles.")
                 elif not stat and moderator_role in server.moderatorRoles:
                     server.moderatorRoles.remove(moderator_role)
                     done = True
-                    message = f"Role with id {moderator_role} is removed from the list of permitted roles."
+                    message = f"Role with ID {moderator_role} is removed from the list of permitted roles."
                 elif not stat:
-                    message = (f"Problem: Role with id {moderator_role} could not be removed from the list of "
+                    message = (f"Problem: Role with ID {moderator_role} could not be removed from the list of "
                                f"permitted roles.")
                 break
 
@@ -105,16 +105,16 @@ def modify(server_id: int, stat: bool, announcement_channel: int = None, moderat
                 if stat and allowed_channel not in server.allowedChannels:
                     server.allowedChannels.append(allowed_channel)
                     done = True
-                    message = f"Channel with id {allowed_channel} is added to the list of permitted channels."
+                    message = f"Channel with ID {allowed_channel} is added to the list of permitted channels."
                 elif stat:
-                    message = (f"Problem: Channel with id {allowed_channel} could not be added to the list of "
+                    message = (f"Problem: Channel with ID {allowed_channel} could not be added to the list of "
                                f"permitted channels.")
                 elif not stat and allowed_channel in server.allowedChannels:
                     server.allowedChannels.remove(allowed_channel)
                     done = True
-                    message = f"Channel with id {allowed_channel} is removed from the list of permitted channels."
+                    message = f"Channel with ID {allowed_channel} is removed from the list of permitted channels."
                 elif not stat:
-                    message = (f"Problem: Channel with id {allowed_channel} could not be removed from the list of "
+                    message = (f"Problem: Channel with ID {allowed_channel} could not be removed from the list of "
                                f"permitted channels.")
                 break
 
