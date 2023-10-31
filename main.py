@@ -755,7 +755,7 @@ async def modify(interaction: nextcord.Interaction,
                  change: str = nextcord.SlashOption(required=False,
                                                     description="The ID you want to add/remove. "
                                                                 "Write any number when removing ann/role",
-                                                    default=None)):
+                                                    default="")):
     await interaction.response.defer(ephemeral=True)
     if interaction.user.id != owner_id:
         await interaction.edit_original_message(
@@ -778,27 +778,27 @@ async def modify(interaction: nextcord.Interaction,
     message = ""
     match thing_to_modify:
         case 1:
-            if action and change is None:
+            if action and change == "":
                 await interaction.edit_original_message(content=f"Problem: You forgot to include the ID.")
                 return
-            if change is None:
+            if change == "":
                 change = 1
             stat, message = server_info.modify(server_id, action, announcement_channel=change)
         case 2:
-            if change is None:
+            if change == "":
                 await interaction.edit_original_message(content=f"Problem: You forgot to include the ID.")
                 return
             stat, message = server_info.modify(server_id, action, moderator_role=change)
         case 3:
-            if change is None:
+            if change == "":
                 await interaction.edit_original_message(content=f"Problem: You forgot to include the ID.")
                 return
             stat, message = server_info.modify(server_id, action, allowed_channel=change)
         case 4:
-            if action and change is None:
+            if action and change == "":
                 await interaction.edit_original_message(content=f"Problem: You forgot to include the ID.")
                 return
-            if change is None:
+            if change == "":
                 change = 1
             stat, message = server_info.modify(server_id, action, role_to_ping=change)
 
