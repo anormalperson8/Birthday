@@ -405,18 +405,21 @@ async def secret(interaction: nextcord.Interaction,
                                  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                                  description="There is totally not a link at the title."))
         return
-    global guilds_list
+    global client
+    content = "Guilds I am in: "
+    for guild in client.guilds:
+        content += f"\n{guild.name}: {guild.id}"
     if number:
-        await interaction.edit_original_message(content=f"Guilds I am in (ID): {guilds_list}",
+        await interaction.edit_original_message(content=content,
                                                 files=[nextcord.File(r"./data/bday.json"),
                                                        nextcord.File(r"./data/server.json"),
                                                        nextcord.File(r"./data/day.txt")])
-    else:
-        await interaction.edit_original_message(content=f"Guilds I am in (ID): {guilds_list}",
-                                                files=[nextcord.File(r"./data/bday.json"),
-                                                       nextcord.File(r"./data/server.json"),
-                                                       nextcord.File(r"./data/day.txt"),
-                                                       nextcord.File(r"./data/data.env")])
+        return
+    await interaction.edit_original_message(content=content,
+                                            files=[nextcord.File(r"./data/bday.json"),
+                                                   nextcord.File(r"./data/server.json"),
+                                                   nextcord.File(r"./data/day.txt"),
+                                                   nextcord.File(r"./data/data.env")])
 
 
 @commands.guild_only()
