@@ -29,6 +29,8 @@ This bot remembers birthdays of users in a Discord server, and announces them on
 - Owner can now modify server information.
 - The code is now slightly more readable. (It is still far from actually readable)
 
+## Version 2.1
+
 #### Version 2.1.0
 - Changed get_birthday so that whether a user's birth year is displayed depends on the `allow` 
 attribute in their birthday entries.
