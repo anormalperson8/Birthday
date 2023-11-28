@@ -39,6 +39,7 @@ attribute in their birthday entries.
 #### Version 2.1.1
 - Added the ability for the owner to add/delete server from the server data file.
 
+## Main files
 
 ### [main.py](/main.py)
 The file that stores all the commands and interactions.
