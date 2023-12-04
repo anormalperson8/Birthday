@@ -38,6 +38,8 @@ def create_page(title: str, url: str, page: int):
         return nextcord.Embed(title=title,
                               description="# Moderator Commands\n"
                                           "The following commands can only be used by moderators of the server.\n"
+                                          "Note that moderator is custom-set, "
+                                          "and not someone who has \"Manage Messages\" permissions."
                                           "## Slash Commands\n"
                                           "**set_user_birthday**\nThis command sets a user's birthday to the bot.\n"
                                           "Same as **set_birthday**.\n"
@@ -52,6 +54,8 @@ def create_page(title: str, url: str, page: int):
                                           "## Text Commands (Prefix: `.`)\n"
                                           "**echo**\nBirthday Eevee echos what you say.\n"
                                           "If you are replying to a message, the message author is pinged.\n"
+                                          "You won't get any response if you're not a moderator.\n"
+                                          "However your message will be deleted.\n"
                                           "**echo2**\nBirthday Eevee echos what you say.\n"
                                           "If you are replying to a message, the message author is *not* pinged.\n"
                                           "You won't get any response if you're not a moderator.\n"
