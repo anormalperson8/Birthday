@@ -735,11 +735,11 @@ async def info(interaction):
         return
     title = "Birthday Eevee <:EeveeWave:1062326395935674489>"
     url = "https://github.com/anormalperson8/Birthday"
-    pages = [info_command.create_page(title, url, i + 1) for i in range(3)]
+    pages = [info_command.create_page(title, url, i + 1) for i in range(4)]
     image = "https://github.com/anormalperson8/Birthday/blob/master/image/BdayEevee.png?raw=true"
     for i in range(len(pages)):
         pages[i].set_thumbnail(image)
-        pages[i].set_footer(text=f"Page {i + 1}/3")
+        pages[i].set_footer(text=f"Page {i + 1}/4")
     await interaction.response.send_message(content="", embed=pages[0], view=Pages(pages=pages, ctx=interaction))
 
 
@@ -883,4 +883,5 @@ async def on_message(message):
         await message.add_reaction("<:EeveeLurk:991271779735719976>")
 
 
-client.run(token)
+if __name__ == "__main__":
+    client.run(token)
