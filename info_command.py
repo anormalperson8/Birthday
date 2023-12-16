@@ -18,6 +18,13 @@ def random_colour():
 def create_page(title: str, url: str, page: int):
     if page == 1:
         return nextcord.Embed(title=title,
+                              description="# Info about me!\n"
+                                          "I am Birthday Eevee!\n"
+                                          "I am a bot that stores and announces server members' birthdays.\n"
+                                          "Read the other pages to see what commands I have to offer.",
+                              colour=random_colour(), url=url)
+    if page == 2:
+        return nextcord.Embed(title=title,
                               description="# Server Global Commands\n"
                                           "The following commands can be used by all users of the server.\n"
                                           "## Slash Commands\n"
@@ -34,7 +41,7 @@ def create_page(title: str, url: str, page: int):
                                           "## Text Commands (Prefix: `.`)\n"
                                           "**boo**\nOi.",
                               colour=random_colour(), url=url)
-    elif page == 2:
+    if page == 3:
         return nextcord.Embed(title=title,
                               description="# Moderator Commands\n"
                                           "The following commands can only be used by moderators of the server.\n"
@@ -61,7 +68,7 @@ def create_page(title: str, url: str, page: int):
                                           "You won't get any response if you're not a moderator.\n"
                                           "However your message will be deleted.",
                               colour=random_colour(), url=url)
-    elif page == 3:
+    if page == 4:
         return nextcord.Embed(title=title,
                               description="# Owner Commands\n"
                                           "Don't try it. They can only be used by the owner.\n"
@@ -76,7 +83,7 @@ def create_page(title: str, url: str, page: int):
                                           "## Text Commands (Prefix: `.`)\n"
                                           "**time**\nYou won't get any response if you're not the owner.",
                               colour=random_colour(), url=url)
-    elif page == 4:
+    if page == 5:
         return nextcord.Embed(title=title,
                               description="# Unused page\n"
                                           "You should not be seeing this page.\n"
