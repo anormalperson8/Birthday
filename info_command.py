@@ -46,7 +46,7 @@ def create_page(title: str, url: str, page: int):
                               description="# Moderator Commands\n"
                                           "The following commands can only be used by moderators of the server.\n"
                                           "Note that moderator is custom-set, "
-                                          "and not someone who has \"Manage Messages\" permissions."
+                                          "and not someone who has \"Manage Messages\" permissions.\n"
                                           "## Slash Commands\n"
                                           "**set_user_birthday**\nThis command sets a user's birthday to the bot.\n"
                                           "Same as **set_birthday**.\n"
