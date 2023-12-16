@@ -33,11 +33,14 @@ This bot remembers birthdays of users in a Discord server, and announces them on
 
 #### Version 2.1.0
 - Changed get_birthday so that whether a user's birth year is displayed depends on the `allow` 
-attribute in their birthday entries.
+attribute on their birthday entries.
 - Changed all past users' entries' `allow` attribute to `false` (Except for itself).
 
 #### Version 2.1.1
 - Added the ability for the owner to add/delete server from the server data file.
+
+#### Version 2.1.2
+- The info command now has a cover page briefly introducing Eevee.
 
 ## Main files
 
