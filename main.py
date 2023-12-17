@@ -543,6 +543,11 @@ async def bday_announcement():
         print("No message.")
 
 
+def get_server_name(server_id: int):
+    global client
+    return list(filter(lambda c: c.id == server_id, client.guilds))[0]
+
+
 async def announce(user_id: list, server: server_info.Server):
     # No announcement channel
     if server.announcementChannel == 1:
@@ -568,7 +573,7 @@ async def announce(user_id: list, server: server_info.Server):
     # print(f"for channel {server.serverID} {role}")
     if len(user_id) == 0:
         await channel_test.send(
-            f"For server {server.serverID}:\n"
+            f"For server {get_server_name(server.serverID)} ({server.serverID}):\n"
             f"No message today.\n{timestamp()}\nThere is at least one birthday today though.")
         return
     # 1 user
