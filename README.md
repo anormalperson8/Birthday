@@ -56,8 +56,8 @@ The file that stores contents of the `info` slash command, as there are a lot of
 ### [server_info.py](/server_info.py)
 The file that stores all the code that is used to retrieve server data, such as its ID of the announcement channel.
 
-### [Dependencies](/requirements.txt)
-This file holds packages one needs to additionally install to host this bot.
+### [Requirements](/requirements.txt)
+This file lists packages one needs to additionally install to host this bot.
 
 ## FAQ
 #### Can I host this bot myself?
