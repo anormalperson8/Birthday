@@ -441,7 +441,7 @@ async def edit(interaction: nextcord.Interaction,
         await interaction.edit_original_message(content="Message not found.")
         return
     if message.author.id == client.user.id:
-        await message.edit(content=content)
+        await message.edit(content=content.replace(r"\n", "\n"))
         await interaction.edit_original_message(content="Done.")
     else:
         await interaction.edit_original_message(content="That message is not mine!")
