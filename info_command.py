@@ -2,6 +2,8 @@ import nextcord
 import datetime
 import random
 
+newline = r"\n"
+
 
 def random_colour():
     colours = [nextcord.Colour.red(),
@@ -61,10 +63,14 @@ def create_page(title: str, url: str, page: int):
                                           "## Text Commands (Prefix: `.`)\n"
                                           "**echo**\nBirthday Eevee echos what you say.\n"
                                           "If you are replying to a message, the message author is pinged.\n"
+                                          f"Manually add `{newline}` in the message box for multi-line messages.\n"
+                                          f"Be careful not to add an extra space after `{newline}`.\n"
                                           "You won't get any response if you're not a moderator.\n"
                                           "However your message will be deleted.\n"
                                           "**echo2**\nBirthday Eevee echos what you say.\n"
                                           "If you are replying to a message, the message author is *not* pinged.\n"
+                                          f"Manually add `{newline}` in the message box for multi-line messages.\n"
+                                          f"Be careful not to add an extra space after `{newline}`.\n"
                                           "You won't get any response if you're not a moderator.\n"
                                           "However your message will be deleted.",
                               colour=random_colour(), url=url)
