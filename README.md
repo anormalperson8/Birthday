@@ -7,6 +7,21 @@ Also used as an exercise to familiarise myself with the syntax of Python program
 
 This project contains a lot of spaghetti codes.
 
+## Version 2.1
+
+#### Version 2.1.0
+- Changed get_birthday so that whether a user's birth year is displayed depends on the `allow` 
+attribute on their birthday entries.
+- Changed all past users' entries' `allow` attribute to `false` (Except for itself).
+
+#### Version 2.1.1
+- Added the ability for the owner to add/delete server from the server data file.
+
+#### Version 2.1.2
+- The info command now has a cover page briefly introducing Eevee.
+
+#### Version 2.1.3
+- The `echo` and `echo2` commands now support new lines by manually typing `\n` in the message box.
 
 ## Version 2.0
 Just like the first version, the bot is based mostly on slash commands.
@@ -28,19 +43,6 @@ This bot remembers birthdays of users in a Discord server, and announces them on
 #### Version 2.0.2
 - Owner can now modify server information.
 - The code is now slightly more readable. (It is still far from actually readable)
-
-## Version 2.1
-
-#### Version 2.1.0
-- Changed get_birthday so that whether a user's birth year is displayed depends on the `allow` 
-attribute on their birthday entries.
-- Changed all past users' entries' `allow` attribute to `false` (Except for itself).
-
-#### Version 2.1.1
-- Added the ability for the owner to add/delete server from the server data file.
-
-#### Version 2.1.2
-- The info command now has a cover page briefly introducing Eevee.
 
 ## Main files
 
