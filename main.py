@@ -378,7 +378,7 @@ async def add_emote(interaction: nextcord.Interaction,
                     message_id: str = nextcord.SlashOption(required=True, description="The ID of the message."),
                     emote: str = nextcord.SlashOption(required=True, description="The emoji you want to add.")):
     await interaction.response.defer(ephemeral=True)
-    if not check_mod(interaction):
+    if interaction.user.id != owner_id and not check_mod(interaction):
         await interaction.edit_original_message(content="Mods only.")
         return
     try:
@@ -428,7 +428,7 @@ async def edit(interaction: nextcord.Interaction,
                message_id: str = nextcord.SlashOption(required=True, description="The ID of the message."),
                content: str = nextcord.SlashOption(required=True, description="The new content of the message.")):
     await interaction.response.defer(ephemeral=True)
-    if not check_mod(interaction):
+    if interaction.user.id != owner_id and not check_mod(interaction):
         await interaction.edit_original_message(content="Mods only.")
         return
     try:
