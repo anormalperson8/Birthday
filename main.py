@@ -586,7 +586,7 @@ async def announce(user_id: list, server: server_info.Server):
                                f"Have a great day birthday star! <:EeveeHeart:977982162303324190> \n"
                                f"{role}")
         # Test server
-        await channel_test.send(f"For server {server.serverID}:\n"
+        await channel_test.send(f"For server {get_server_name(server.serverID)} ({server.serverID}):\n"
                                 f"{client.get_user(int(user_id[0])).name}'s birthday message is sent.\n{timestamp()}")
     # 2 users
     elif len(user_id) == 2:
