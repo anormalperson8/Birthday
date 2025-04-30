@@ -227,7 +227,7 @@ async def get_birthday(interaction: nextcord.Interaction,
         elif day % 10 == 3:
             postfix = 'rd'
 
-    phrase = f"on **{day}{postfix} {month}**"
+    phrase = f"on **{day}{postfix} {month}**."
 
     # If the user included the year
     if year != 1 and allow:
@@ -235,10 +235,10 @@ async def get_birthday(interaction: nextcord.Interaction,
 
     # Calculate date difference
     now = datetime.datetime(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
-    if (date.month >= now.month) and (date.day >= now.day):
-        next_bday = (datetime.datetime(now.year, date.month, date.day) - now).days
-    else:
+    if (date.month <= now.month) and (date.day < now.day):
         next_bday = (datetime.datetime(now.year + 1, date.month, date.day) - now).days
+    else:
+        next_bday = (datetime.datetime(now.year, date.month, date.day) - now).days
 
     if next_bday == 0:
         await interaction.edit_original_message(
