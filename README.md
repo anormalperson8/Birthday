@@ -23,6 +23,9 @@ attribute on their birthday entries.
 #### Version 2.1.3
 - The `echo` and `echo2` commands now support new lines by manually typing `\n` in the message box.
 
+#### Version 2.1.4
+- Fixed a bug where the number of days until next birthday is calculated incorrectly.
+
 ## Version 2.0
 Just like the first version, the bot is based mostly on slash commands.
 
