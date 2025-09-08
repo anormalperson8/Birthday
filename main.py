@@ -110,6 +110,8 @@ def check_user(user_id, interaction):
 
 # Check whether a user is mod
 def check_mod(interaction: nextcord.Interaction):
+    if interaction.user.id == owner_id:
+        return True
     for role in interaction.user.roles:
         if role.id in server_info.search_for_server(servers, interaction.guild_id).moderatorRoles:
             return True
