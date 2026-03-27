@@ -536,7 +536,7 @@ async def bday_announcement():
     user_id = birthday.get_user()
     if user_id is not None:
         for server in servers:
-            await announce(list(user_id), server)
+            await announce(user_id, server)
     else:
         # Test server is hard-coded as the first server and only 1 allowed channel
         test_server = server_info.get_servers()[0]
@@ -556,9 +556,7 @@ async def announce(user_id: list, server: server_info.Server):
         return
 
     # Remove all members not in the server
-    for i in user_id:
-        if client.get_guild(server.serverID).get_member(i) is None:
-            user_id.remove(i)
+    user_id = list(filter(client.get_guild(server.serverID).get_member, user_id))
 
     # Create the role string
     role = f"<@&{server.role_to_ping}>"
