@@ -3,7 +3,7 @@ import datetime
 import random
 
 newline = r"\n"
-
+bot_version = "2.1.5"
 
 def random_colour():
     colours = [nextcord.Colour.red(),
@@ -23,7 +23,8 @@ def create_page(title: str, url: str, page: int):
                               description="# Info about me!\n"
                                           "I am Birthday Eevee!\n"
                                           "I am a bot that stores and announces server members' birthdays.\n"
-                                          "Read the other pages to see what commands I have to offer.",
+                                          "Read the other pages to see what commands I have to offer.\n\n"
+                                          f"-# Version: {bot_version}",
                               colour=random_colour(), url=url)
     if page == 2:
         return nextcord.Embed(title=title,
