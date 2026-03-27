@@ -26,6 +26,10 @@ attribute on their birthday entries.
 #### Version 2.1.4
 - Fixed a bug where the number of days until next birthday is calculated incorrectly.
 
+#### Version 2.1.5
+- Fixed a bug where users not in a server can sometimes be announced as the birthday star.
+- Added version to the `/info` command.
+
 ## Version 2.0
 Just like the first version, the bot is based mostly on slash commands.
 
